@@ -1,0 +1,30 @@
+{
+    "name": "@danimart1991/node-red-radarr-api",
+    "version": "0.1.0",
+    "description": "A set of Node-RED nodes to use with Radarr API.",
+    "license": "Apache-2.0",
+    "homepage": "https://github.com/danimart1991/node-red-nodes/node-red-radarr-api",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/danimart1991/node-red-nodes.git",
+        "directory": "tree/master/node-red-radarr-api"
+    },
+    "keywords": [
+        "node-red",
+        "api",
+        "radarr"
+    ],
+    "dependencies": {
+        "request": "^2.88.0"
+    },
+    "node-red": {
+        "version": ">=0.1.0",
+        "nodes": {
+            "radarr-api": "radarr-api.js"
+        }
+    },
+    "author": "Daniel Martín González (https://danielmartingonzalez.com)",
+    "bugs": {
+        "url": "https://github.com/danimart1991/node-red-nodes/issues"
+    }
+}
