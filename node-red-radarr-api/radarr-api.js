@@ -1,6 +1,6 @@
 module.exports = function (RED) {
     'use strict';
-    var request = require('request');
+    let request = require('request');
 
     function RadarrApiServerNode(config) {
         RED.nodes.createNode(this, config);
@@ -36,7 +36,7 @@ module.exports = function (RED) {
         },
     });
     RadarrApiServerNode.prototype.get = function (uri, opts) {
-        var node = this;
+        let node = this;
         opts = opts || {};
         opts.apikey = node.credentials.api_key;
         return new Promise(function (resolve, reject) {
