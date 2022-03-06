@@ -23,6 +23,9 @@
             "radarr-api": "radarr-api.js"
         }
     },
+    "engines": {
+        "node": ">=12.0.0"
+    },
     "author": "Daniel Martín González (https://danielmartingonzalez.com)",
     "bugs": {
         "url": "https://github.com/danimart1991/node-red-nodes/issues"
