@@ -1,0 +1,33 @@
+{
+    "name": "@danimart1991/node-red-sonarr-api",
+    "version": "0.0.0",
+    "description": "A set of Node-RED nodes to use with Sonarr API.",
+    "license": "Apache-2.0",
+    "homepage": "https://github.com/danimart1991/node-red-nodes/node-red-sonarr-api",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/danimart1991/node-red-nodes.git",
+        "directory": "tree/master/node-red-sonarr-api"
+    },
+    "keywords": [
+        "node-red",
+        "api",
+        "sonarr"
+    ],
+    "dependencies": {
+        "request": "^2.88.0"
+    },
+    "node-red": {
+        "version": "^2.0.0",
+        "nodes": {
+            "sonarr-api": "sonarr-api.js"
+        }
+    },
+    "engines": {
+        "node": ">=12.0.0"
+    },
+    "author": "Daniel Martín González (https://danielmartingonzalez.com)",
+    "bugs": {
+        "url": "https://github.com/danimart1991/node-red-nodes/issues"
+    }
+}
