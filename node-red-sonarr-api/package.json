@@ -1,6 +1,6 @@
 {
     "name": "@danimart1991/node-red-sonarr-api",
-    "version": "0.0.0",
+    "version": "0.1.1",
     "description": "A set of Node-RED nodes to use with Sonarr API.",
     "license": "Apache-2.0",
     "homepage": "https://github.com/danimart1991/node-red-nodes/node-red-sonarr-api",
