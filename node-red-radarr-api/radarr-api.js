@@ -86,6 +86,7 @@ module.exports = function (RED) {
                 try {
                     let movie_id = RED.util.evaluateNodeProperty(config.movie_id, config.movie_id_type || 'num', node, msg);
                     let uri = `movie/${movie_id ? movie_id : ''}`;
+                    let nodeType = 'radarr-api-get-movie-s';
 
                     this.server
                         .get(uri)
@@ -119,33 +120,113 @@ module.exports = function (RED) {
                                     break;
                             }
 
-                            sendOutput(node, msg, level, message, statusMessage);
+                            sendOutput(node, msg, nodeType, level, message, statusMessage);
                         })
                         .catch(function (err) {
                             level = 'Error';
                             message = err;
                             statusMessage = "can't get movie/s";
 
-                            sendOutput(node, msg, level, message, statusMessage);
+                            sendOutput(node, msg, nodeType, level, message, statusMessage);
                         });
                 } catch (err) {
                     level = 'Critical';
                     message = err;
                     statusMessage = 'unknown exception';
 
-                    sendOutput(node, msg, level, message, statusMessage);
+                    sendOutput(node, msg, nodeType, level, message, statusMessage);
                 }
             });
         }
     }
     RED.nodes.registerType('radarr-api-get-movie-s', RadarrApiGetMovieNode);
 
-    function sendOutput(node, msg, level, message, statusMessage) {
+    function RadarrApiGetCommandNode(config) {
+        RED.nodes.createNode(this, config);
+        let node = this;
+
+        node.status({});
+
+        let credentials = RED.nodes.getCredentials(config.server);
+        if (!credentials) {
+            node.status({ fill: 'red', shape: 'ring', text: 'invalid credentials' });
+            node.error('Error: No credentials configured.');
+        } else if (!credentials.url || !credentials.api_key) {
+            node.status({ fill: 'red', shape: 'ring', text: 'invalid credentials' });
+            node.error('Error: Credentials configured incorrectly.');
+        } else {
+            this.server = RED.nodes.getNode(config.server);
+
+            node.on('input', function (msg) {
+                node.status({ fill: 'blue', shape: 'dot', text: 'obtaining command/s' });
+                let level = 'Other';
+                let statusMessage = 'unknown status';
+                let message = 'Unknown Status.';
+
+                try {
+                    let command_id = RED.util.evaluateNodeProperty(config.command_id, config.command_id_type || 'num', node, msg);
+                    let uri = `command/${command_id ? command_id : ''}`;
+                    let nodeType = 'radarr-api-get-command-s';
+
+                    this.server
+                        .get(uri)
+                        .then(function (response) {
+                            switch (response.status) {
+                                case 200:
+                                    msg.payload = response.body;
+                                    level = 'Info';
+                                    message = `${Array.isArray(msg.payload) ? msg.payload.length : 1} Command/s returned`;
+                                    statusMessage = message.toLowerCase();
+                                    break;
+                                case 400:
+                                    level = 'Error';
+                                    message = '400 Bad Request. Check Command Id parameter.';
+                                    statusMessage = '400 bad request';
+                                    break;
+                                case 401:
+                                    level = 'Error';
+                                    message = '401 Unauthorized. Invalid API Key.';
+                                    statusMessage = '401 unauthorized';
+                                    break;
+                                case 404:
+                                    level = 'Error';
+                                    message = "404 Command with Id '${command_id}' not found.`";
+                                    statusMessage = '404 not found';
+                                    break;
+                                default:
+                                    level = 'Error';
+                                    message = response;
+                                    statusMessage = 'unknown error';
+                                    break;
+                            }
+
+                            sendOutput(node, msg, nodeType, level, message, statusMessage);
+                        })
+                        .catch(function (err) {
+                            level = 'Error';
+                            message = err;
+                            statusMessage = "can't get command/s";
+
+                            sendOutput(node, msg, nodeType, level, message, statusMessage);
+                        });
+                } catch (err) {
+                    level = 'Critical';
+                    message = err;
+                    statusMessage = 'unknown exception';
+
+                    sendOutput(node, msg, nodeType, level, message, statusMessage);
+                }
+            });
+        }
+    }
+    RED.nodes.registerType('radarr-api-get-command-s', RadarrApiGetCommandNode);
+
+    function sendOutput(node, msg, sourceType, level, message, statusMessage) {
         let log = {
             payload: {
                 source: {
                     id: node.id,
-                    type: 'radarr-api-get-movie-s',
+                    type: sourceType,
                     name: node.name,
                     topic: msg.topic,
                 },

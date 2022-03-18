@@ -53,6 +53,10 @@ Two parameters are required to properly configure this node:
 
 Get an _Array_ of all the movies stored in the _Radarr_ database. The **Id** of a movie can be included as an additional parameter to obtain only the data of that movie.
 
+### Get Command/s
+
+Get an _Array_ of all the commands stored in the _Radarr System Tasks Queue_. The **Id** of a command can be included as an additional parameter to obtain only the data of that command.
+
 ## Author
 
 [Daniel Martin Gonzalez](https://danielmartingonzalez.com)
