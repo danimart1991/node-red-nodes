@@ -61,6 +61,10 @@ Get an _Array_ of all the commands stored in the _Sonarr System Tasks Queue_. Th
 
 Get an _Array_ of all the episodes stored in the _Sonarr_ database. The **Id** of a series must be included as a parameter to obtain only the episodes of that series.
 
+### Get Episode File/s
+
+Get an _Array_ of all the episode files stored in the _Sonarr_ database. The **Id** of a series must be included as a parameter to obtain only the episode files of that series.
+
 ## Author
 
 [Daniel Martin Gonzalez](https://danielmartingonzalez.com)
