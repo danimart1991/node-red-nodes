@@ -20,7 +20,9 @@
     "node-red": {
         "version": "^2.0.0",
         "nodes": {
-            "sonarr-api": "sonarr-api.js"
+            "sonarr-api-server": "nodes/sonarr-api-server.js",
+            "sonarr-api-series": "nodes/sonarr-api-series.js",
+            "sonarr-api-command": "nodes/sonarr-api-command.js"
         }
     },
     "engines": {
