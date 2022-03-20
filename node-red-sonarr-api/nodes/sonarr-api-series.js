@@ -24,7 +24,7 @@ module.exports = function (RED) {
 
                 let level = 'Other';
                 let statusMessage = 'unknown status';
-                let message = 'Unknown Status.'; 
+                let message = 'Unknown Status.';
 
                 try {
                     let series_id = RED.util.evaluateNodeProperty(config.series_id, config.series_id_type || 'num', node, msg);

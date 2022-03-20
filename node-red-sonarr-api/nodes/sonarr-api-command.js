@@ -81,6 +81,6 @@ module.exports = function (RED) {
             });
         }
     }
-    
+
     RED.nodes.registerType('sonarr-api-command-get', SonarrApiCommandGetNode);
 };

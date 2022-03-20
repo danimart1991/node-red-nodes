@@ -29,7 +29,7 @@ module.exports = function (RED) {
             }
         }
     }
-    
+
     RED.nodes.registerType('radarr-api-server', RadarrApiServerNode, {
         credentials: {
             url: { type: 'text' },
@@ -63,7 +63,7 @@ module.exports = function (RED) {
         });
     };
 
-    RadarrApiServerNode.prototype.sendOutput = function(node, msg, sourceType, level, message, statusMessage) {
+    RadarrApiServerNode.prototype.sendOutput = function (node, msg, sourceType, level, message, statusMessage) {
         let log = {
             payload: {
                 source: {

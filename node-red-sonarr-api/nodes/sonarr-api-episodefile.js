@@ -32,7 +32,7 @@ module.exports = function (RED) {
                 try {
                     let series_id = RED.util.evaluateNodeProperty(config.series_id, config.series_id_type || 'num', node, msg);
                     let uri = `episodefile`;
-                    let opts = { seriesId: series_id }
+                    let opts = { seriesId: series_id };
 
                     server
                         .get(uri, opts)

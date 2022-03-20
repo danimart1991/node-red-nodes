@@ -29,7 +29,7 @@ module.exports = function (RED) {
             }
         }
     }
-    
+
     RED.nodes.registerType('sonarr-api-server', SonarrApiServerNode, {
         credentials: {
             url: { type: 'text' },
@@ -63,7 +63,7 @@ module.exports = function (RED) {
         });
     };
 
-    SonarrApiServerNode.prototype.sendOutput = function(node, msg, sourceType, level, message, statusMessage) {
+    SonarrApiServerNode.prototype.sendOutput = function (node, msg, sourceType, level, message, statusMessage) {
         let log = {
             payload: {
                 source: {
