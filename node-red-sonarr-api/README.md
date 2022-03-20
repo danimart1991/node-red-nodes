@@ -23,7 +23,7 @@ In addition, all the nodes have a **Log** output that offers information on how 
     "payload": {
         "source": {
             "id": "0f12103e2251c436",
-            "type": "sonarr-api-get-series"
+            "type": "sonarr-api-series-get"
         },
         "level": "Info",
         "message": "2084 Series returned"

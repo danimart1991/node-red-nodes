@@ -1,4 +1,4 @@
-<script type="text/x-red" data-template-name="sonarr-api-get-command">
+<script type="text/x-red" data-template-name="sonarr-api-command-get">
     <div class="form-row">
         <label for="node-input-server"><i class="fa fa-server"></i> Server</label>
         <input type="text" id="node-input-server" />
@@ -14,7 +14,7 @@
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="sonarr-api-get-command">
+<script type="text/x-red" data-help-name="sonarr-api-command-get">
     <p>Get an <i>Array</i> of all the commands in the <i>Sonarr System Tasks Queue</i>. The <b>Id</b> of a command can be included as an additional parameter to obtain only the data of that command.</p>
     <p>In addition, the second output provides a <b>Log</b> with information on how the execution has worked.</p>
 
@@ -48,7 +48,7 @@
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType('sonarr-api-get-command', {
+    RED.nodes.registerType('sonarr-api-command-get', {
         category: 'sonarr',
         color: '#ffc230',
         defaults: {
