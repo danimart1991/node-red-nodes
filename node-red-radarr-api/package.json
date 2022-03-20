@@ -20,7 +20,9 @@
     "node-red": {
         "version": "^2.0.0",
         "nodes": {
-            "radarr-api": "radarr-api.js"
+            "radarr-api-server": "nodes/radarr-api-server.js",
+            "radarr-api-movie": "nodes/radarr-api-movie.js",
+            "radarr-api-command": "nodes/radarr-api-command.js"
         }
     },
     "engines": {
