@@ -22,6 +22,7 @@
         "nodes": {
             "sonarr-api-server": "nodes/sonarr-api-server.js",
             "sonarr-api-series": "nodes/sonarr-api-series.js",
+            "sonarr-api-episode": "nodes/sonarr-api-episode.js",
             "sonarr-api-command": "nodes/sonarr-api-command.js"
         }
     },
