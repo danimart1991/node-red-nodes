@@ -1,7 +1,7 @@
 module.exports = function (RED) {
     'use strict';
 
-    function RadarrApiGetCommandNode(config) {
+    function RadarrApiCommandGetNode(config) {
         RED.nodes.createNode(this, config);
         let node = this;
 
@@ -52,7 +52,7 @@ module.exports = function (RED) {
                                     break;
                                 case 404:
                                     level = 'Error';
-                                    message = "404 Command with Id '${command_id}' not found.`";
+                                    message = "404 Not Found. Command with Id '${command_id}' not found.`";
                                     statusMessage = '404 not found';
                                     break;
                                 default:
@@ -82,5 +82,5 @@ module.exports = function (RED) {
         }
     }
 
-    RED.nodes.registerType('radarr-api-command-get', RadarrApiGetCommandNode);
+    RED.nodes.registerType('radarr-api-command-get', RadarrApiCommandGetNode);
 };

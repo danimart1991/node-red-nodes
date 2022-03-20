@@ -23,7 +23,7 @@ In addition, all the nodes have a **Log** output that offers information on how 
     "payload": {
         "source": {
             "id": "0f12103e2251c436",
-            "type": "radarr-api-get-movie-s"
+            "type": "radarr-api-movie-get"
         },
         "level": "Info",
         "message": "2084 Movie/s returned"

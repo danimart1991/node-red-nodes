@@ -1,7 +1,7 @@
 module.exports = function (RED) {
     'use strict';
 
-    function RadarrApiGetMovieNode(config) {
+    function RadarrApiMovieGetNode(config) {
         RED.nodes.createNode(this, config);
         let node = this;
 
@@ -52,7 +52,7 @@ module.exports = function (RED) {
                                     break;
                                 case 404:
                                     level = 'Error';
-                                    message = "404 Movie with Id '${movie_id}' not found.`";
+                                    message = "404 Not Found. Movie with Id '${movie_id}' not found.`";
                                     statusMessage = '404 not found';
                                     break;
                                 default:
@@ -81,5 +81,5 @@ module.exports = function (RED) {
         }
     }
 
-    RED.nodes.registerType('radarr-api-movie-get', RadarrApiGetMovieNode);
+    RED.nodes.registerType('radarr-api-movie-get', RadarrApiMovieGetNode);
 };
