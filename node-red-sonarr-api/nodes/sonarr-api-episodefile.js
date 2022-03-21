@@ -46,7 +46,7 @@ module.exports = function (RED) {
                                     break;
                                 case 400:
                                     level = 'Error';
-                                    message = '400 Bad Request. Check Episode File/s Id parameter.';
+                                    message = '400 Bad Request. Check Series Id parameter.';
                                     statusMessage = '400 bad request';
                                     break;
                                 case 401:
