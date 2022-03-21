@@ -57,6 +57,10 @@ Get an _Array_ of all the movies stored in the _Radarr_ database. The **Id** of 
 
 Get an _Array_ of all the commands stored in the _Radarr System Tasks Queue_. The **Id** of a command can be included as an additional parameter to obtain only the data of that command.
 
+### Get (Movie) Histories
+
+Get an _Array_ with histories stored in the _Radarr_ database. The **Id** of a movie can be included as an additional parameter to obtain only the data of that movie.
+
 ## Author
 
 [Daniel Martin Gonzalez](https://danielmartingonzalez.com)
