@@ -28,8 +28,8 @@ Two parameters are required to properly configure this node:
 ### Nodes
 
 | Entity       | Get | Post | Put | Delete |
-| ------------ | :-: | ---- | --- | ------ |
-| Command      |  ✔  |      |     |        |
+| ------------ | :-: | :--: | :-: | :----: |
+| Command      |  ✔  |  ✔   |     |        |
 | Episode      |  ✔  |      |     |        |
 | Episode File |  ✔  |      |     |        |
 | History      |  ✔  |      |     |        |

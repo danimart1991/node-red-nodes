@@ -63,6 +63,36 @@ module.exports = function (RED) {
         });
     };
 
+    SonarrApiServerNode.prototype.post = function (uri, opts, data, formData) {
+        let node = this;
+        opts = opts || {};
+        opts.apikey = node.credentials.api_key;
+        var options = {
+            baseUrl: node.credentials.url,
+            uri: '/api/v3/' + uri,
+            json: true,
+            qs: opts,
+        };
+        if (data) {
+            options.body = data;
+        }
+        if (formData) {
+            options.formData = formData;
+        }
+        return new Promise(function (resolve, reject) {
+            request.post(options, function (err, response, body) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve({
+                        status: response.statusCode,
+                        body: body,
+                    });
+                }
+            });
+        });
+    };
+
     SonarrApiServerNode.prototype.sendOutput = function (node, msg, sourceType, level, message, statusMessage) {
         let log = {
             payload: {
