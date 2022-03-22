@@ -1,0 +1,216 @@
+<script type="text/html" data-template-name="sonarr-api-history-get">
+    <div class="form-row">
+        <label for="node-input-server"><i class="fa fa-server"></i> Server</label>
+        <input type="text" id="node-input-server" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name" />
+    </div>
+    <hr align="middle" />
+    <div class="form-row">
+        <label for="node-input-include_series"><i class="fa fa-plus"></i> Series Data</label>
+        <input type="text" id="node-input-include_series" />
+        <input type="hidden" id="node-input-include_series_type" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-include_episode"><i class="fa fa-plus"></i> Episode Data</label>
+        <input type="text" id="node-input-include_episode" />
+        <input type="hidden" id="node-input-include_episode_type" />
+    </div>
+    <hr align="middle" />
+    <div class="form-row">
+        <label for="node-input-series_id"><i class="fa fa-hashtag"></i> Series Id</label>
+        <input type="text" id="node-input-series_id" placeholder="Optional" />
+        <input type="hidden" id="node-input-series_id_type" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-episode_id"><i class="fa fa-hashtag"></i> Episode Id</label>
+        <input type="text" id="node-input-episode_id" placeholder="Optional" />
+        <input type="hidden" id="node-input-episode_id_type" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-event_type"><i class="fa fa-history"></i> Events Type</label>
+        <input type="text" id="node-input-event_type" />
+    </div>
+    <hr align="middle" />
+    <div class="form-row">
+        <label for="node-input-sort_key"><i class="fa fa-sort-alpha-asc"></i> Sort By</label>
+        <input type="text" id="node-input-sort_key" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-sort_dir"><i class="fa fa-sort"></i> Direction</label>
+        <input type="text" id="node-input-sort_dir" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-page"><i class="fa fa-files-o"></i> Page</label>
+        <input type="text" id="node-input-page" placeholder="Default: 1" />
+        <input type="hidden" id="node-input-page_type" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-page_size"><i class="fa fa-file-text-o"></i> Page Size</label>
+        <input type="text" id="node-input-page_size" placeholder="Default: 10" />
+        <input type="hidden" id="node-input-page_size_type" />
+    </div>
+</script>
+
+<script type="text/html" data-help-name="sonarr-api-history-get">
+    <p>
+        Get an <i>Array</i> with histories stored in the <i>Sonarr</i> database. The <b>Id</b> of a series or episode can be included as an additional parameter
+        to obtain only the data of that series or episode. Indeed, there are other filters and options (see below).
+    </p>
+    <p>In addition, the second output provides a <b>Log</b> with information on how the execution has worked.</p>
+
+    <h3>Parameters</h3>
+    <dl class="message-properties">
+        <dt>server <span class="property-type">radarr-api-server</span></dt>
+        <dd>a <b>Radarr Server</b> previously configured.</dd>
+        <dt>include_series <span class="property-type">bool</span></dt>
+        <dd>adds Series data to the response.</dd>
+        <dt>include_episode <span class="property-type">bool</span></dt>
+        <dd>adds Episode data to the response.</dd>
+        <dt class="optional">series_id <span class="property-type">number</span></dt>
+        <dd>return only histories of a <b>Series</b>.</dd>
+        <dt class="optional">episode_id <span class="property-type">number</span></dt>
+        <dd>return only histories of a <b>Episode</b>.</dd>
+        <dt class="optional">event_type <span class="property-type">select</span></dt>
+        <dd>filter histories by <b>Event Type</b>.</dd>
+        <dt class="optional">sort_key <span class="property-type">select</span></dt>
+        <dd>sort histories by <b>Date</b> or <b>Title</b>.</dd>
+        <dt class="optional">sort_dir <span class="property-type">select</span></dt>
+        <dd>sort histories <b>Descending</b> or <b>Ascending</b>.</dd>
+        <dt class="optional">page <span class="property-type">number</span></dt>
+        <dd>return this <b>page</b> number.</dd>
+        <dt class="optional">page_size <span class="property-type">number</span></dt>
+        <dd>split result in pages with this <b>size</b>.</dd>
+    </dl>
+
+    <h3>Output 1 (Result)</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>an <i>Array</i> with one or more history <i>objects</i>.</dd>
+    </dl>
+
+    <h3>Output 2 (Log)</h3>
+    <dl class="message-properties">
+        <dt>payload.level <span class="property-type">string</span></dt>
+        <dd>the log <b>Level</b>: <i>Debug</i>, <i>Info</i>, <i>Warn</i>, <i>Error</i>, <i>Critical</i> or <i>Other</i>.</dd>
+        <dt>payload.message <span class="property-type">string</span></dt>
+        <dd>the log <b>Message</b>.</dd>
+        <dt>payload.source.id <span class="property-type">string</span></dt>
+        <dd>the <b>Id</b> of the node that threw the log.</dd>
+        <dt>payload.source.type <span class="property-type">string</span></dt>
+        <dd>the <b>Type</b> of the node that threw the log.</dd>
+        <dt>payload.source.name <span class="property-type">string</span></dt>
+        <dd>the <b>Name</b>, if set, of the node that threw the log.</dd>
+    </dl>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('sonarr-api-history-get', {
+        category: 'sonarr',
+        color: '#5d9cec',
+        defaults: {
+            name: { value: '' },
+            server: { value: '', type: 'sonarr-api-server', required: true },
+            include_series: { value: '' },
+            include_series_type: { value: 'bool' },
+            include_episode: { value: '' },
+            include_episode_type: { value: 'bool' },
+            series_id: { value: '' },
+            series_id_type: { value: 'num' },
+            episode_id: { value: '' },
+            episode_id_type: { value: 'num' },
+            event_type: { value: '' },
+            sort_key: { value: '' },
+            sort_dir: { value: '' },
+            page: { value: '' },
+            page_type: { value: 'num' },
+            page_size: { value: '' },
+            page_size_type: { value: 'num' },
+        },
+        inputs: 1,
+        outputs: 2,
+        icon: 'font-awesome/fa-television',
+        label: function () {
+            return this.name || 'get histories';
+        },
+        paletteLabel: function () {
+            return 'get histories';
+        },
+        outputLabels: ['histories', 'log'],
+        oneditprepare: function () {
+            $('#node-input-include_series').typedInput({
+                default: 'bool',
+                typeField: $('#node-input-include_series_type'),
+                types: ['bool'],
+            });
+            $('#node-input-include_episode').typedInput({
+                default: 'bool',
+                typeField: $('#node-input-include_episode_type'),
+                types: ['bool'],
+            });
+            $('#node-input-series_id').typedInput({
+                default: 'num',
+                typeField: $('#node-input-series_id_type'),
+                types: ['num', 'msg', 'flow', 'global', 'jsonata'],
+            });
+            $('#node-input-episode_id').typedInput({
+                default: 'num',
+                typeField: $('#node-input-episode_id_type'),
+                types: ['num', 'msg', 'flow', 'global', 'jsonata'],
+            });
+            $('#node-input-event_type').typedInput({
+                types: [
+                    {
+                        value: 'event_type',
+                        options: [
+                            { value: '', label: 'All' },
+                            { value: '0', label: 'Unknown' },
+                            { value: '1', label: 'Grabbed' },
+                            { value: '2', label: 'Series Folder Imported' },
+                            { value: '3', label: 'Download Folder Imported' },
+                            { value: '4', label: 'Download Failed' },
+                            { value: '5', label: 'Episode File Deleted' },
+                            { value: '6', label: 'Episode File Renamed' },
+                            { value: '7', label: 'Download Ignored' },
+                        ],
+                    },
+                ],
+            });
+            $('#node-input-sort_key').typedInput({
+                types: [
+                    {
+                        value: 'sort_key',
+                        options: [
+                            { value: 'date', label: 'Date' },
+                            { value: 'series.title', label: 'Series Title' },
+                            { value: 'episode.title', label: 'Episode Title' },
+                        ],
+                    },
+                ],
+            });
+            $('#node-input-sort_dir').typedInput({
+                types: [
+                    {
+                        value: 'sort_dir',
+                        options: [
+                            { value: 'descending', label: 'Descending' },
+                            { value: 'ascending', label: 'Ascending' },
+                        ],
+                    },
+                ],
+            });
+            $('#node-input-page').typedInput({
+                default: 'num',
+                typeField: $('#node-input-page_type'),
+                types: ['num', 'msg', 'flow', 'global', 'jsonata'],
+            });
+            $('#node-input-page_size').typedInput({
+                default: 'num',
+                typeField: $('#node-input-page_size_type'),
+                types: ['num', 'msg', 'flow', 'global', 'jsonata'],
+            });
+        },
+    });
+</script>
