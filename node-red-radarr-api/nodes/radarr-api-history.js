@@ -29,9 +29,22 @@ module.exports = function (RED) {
                 try {
                     let include_movie = RED.util.evaluateNodeProperty(config.include_movie, 'bool', node, msg);
                     let movie_id = RED.util.evaluateNodeProperty(config.movie_id, config.movie_id_type || 'num', node, msg);
+                    let page = RED.util.evaluateNodeProperty(config.page, config.page_type || 'num', node, msg);
+                    let page_size = RED.util.evaluateNodeProperty(config.page_size, config.page_size_type || 'num', node, msg);
                     let uri = `history/${movie_id ? 'movie' : ''}`;
-                    let opts = { includeMovie: include_movie, movieId: movie_id };
-                    if (movie_id) {
+                    let opts = {
+                        includeMovie: include_movie,
+                        movieId: movie_id,
+                        sortKey: config.sort_key,
+                        sortDirection: config.sort_dir,
+                    };
+                    if (page) {
+                        opts.page = page;
+                    }
+                    if (page_size) {
+                        opts.pageSize = page_size;
+                    }
+                    if (config.event_type) {
                         opts.eventType = config.event_type;
                     }
 

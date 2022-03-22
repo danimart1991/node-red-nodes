@@ -9,7 +9,7 @@
     </div>
     <hr align="middle" />
     <div class="form-row">
-        <label for="node-input-include_movie"><i class="fa fa-video-camera"></i> Include Movie Data</label>
+        <label for="node-input-include_movie"><i class="fa fa-plus"></i> Movie Data</label>
         <input type="text" id="node-input-include_movie" />
         <input type="hidden" id="node-input-include_movie_type" />
     </div>
@@ -19,9 +19,30 @@
         <input type="text" id="node-input-movie_id" placeholder="Optional" />
         <input type="hidden" id="node-input-movie_id_type" />
     </div>
-    <div class="form-row" id="node-input-event_type_row">
+    <div class="form-row">
         <label for="node-input-event_type"><i class="fa fa-history"></i> Events Type</label>
         <input type="text" id="node-input-event_type" />
+    </div>
+    <div id="node-input-order_row">
+        <hr align="middle" />
+        <div class="form-row">
+            <label for="node-input-sort_key"><i class="fa fa-sort-alpha-asc"></i> Sort By</label>
+            <input type="text" id="node-input-sort_key" />
+        </div>
+        <div class="form-row">
+            <label for="node-input-sort_dir"><i class="fa fa-sort"></i> Direction</label>
+            <input type="text" id="node-input-sort_dir" />
+        </div>
+        <div class="form-row">
+            <label for="node-input-page"><i class="fa fa-files-o"></i> Page</label>
+            <input type="text" id="node-input-page" placeholder="Default: 1" />
+            <input type="hidden" id="node-input-page_type" />
+        </div>
+        <div class="form-row">
+            <label for="node-input-page_size"><i class="fa fa-file-text-o"></i> Page Size</label>
+            <input type="text" id="node-input-page_size" placeholder="Default: 10" />
+            <input type="hidden" id="node-input-page_size_type" />
+        </div>
     </div>
 </script>
 
@@ -39,9 +60,17 @@
         <dt>include_movie <span class="property-type">bool</span></dt>
         <dd>adds Movie data to the response.</dd>
         <dt class="optional">movie_id <span class="property-type">number</span></dt>
-        <dd>a Movie <b>Id</b> used to return only this item.</dd>
+        <dd>return only histories of a <b>Movie</b>.</dd>
         <dt class="optional">event_type <span class="property-type">select</span></dt>
-        <dd>a <b>Event Type</b> used to filter histories of a movie.</dd>
+        <dd>filter histories by <b>Event Type</b>.</dd>
+        <dt class="optional">sort_key <span class="property-type">select</span></dt>
+        <dd>sort histories by <b>Date</b> or <b>Title</b>.</dd>
+        <dt class="optional">sort_dir <span class="property-type">select</span></dt>
+        <dd>sort histories <b>Descending</b> or <b>Ascending</b>.</dd>
+        <dt class="optional">page <span class="property-type">number</span></dt>
+        <dd>return this <b>page</b> number.</dd>
+        <dt class="optional">page_size <span class="property-type">number</span></dt>
+        <dd>split result in pages with this <b>size</b>.</dd>
     </dl>
 
     <h3>Output 1 (Result)</h3>
@@ -77,12 +106,18 @@
             movie_id: {
                 value: '',
                 validate: function (value) {
-                    value ? $('#node-input-event_type_row').show() : $('#node-input-event_type_row').hide();
+                    value ? $('#node-input-order_row').hide() : $('#node-input-order_row').show();
                     return true;
                 },
             },
             movie_id_type: { value: 'num' },
             event_type: { value: '' },
+            sort_key: { value: '' },
+            sort_dir: { value: '' },
+            page: { value: '' },
+            page_type: { value: 'num' },
+            page_size: { value: '' },
+            page_size_type: { value: 'num' },
         },
         inputs: 1,
         outputs: 2,
@@ -111,23 +146,58 @@
                         value: 'event_type',
                         options: [
                             { value: '', label: 'All' },
-                            { value: 'unknown', label: 'Unknown' },
-                            { value: 'grabbed', label: 'Grabbed' },
-                            { value: 'downloadFolderImported', label: 'Download Folder Imported' },
-                            { value: 'downloadFailed', label: 'Download Failed' },
-                            { value: 'movieFileDeleted', label: 'Movie File Deleted' },
-                            { value: 'movieFolderImported', label: 'Movie Folder Imported' },
-                            { value: 'movieFileRenamed', label: 'Movie File Renamed' },
-                            { value: 'downloadIgnored', label: 'Download Ignored' },
+                            { value: '0', label: 'Unknown' },
+                            { value: '1', label: 'Grabbed' },
+                            { value: '3', label: 'Download Folder Imported' },
+                            { value: '4', label: 'Download Failed' },
+                            { value: '6', label: 'Movie File Deleted' },
+                            { value: '7', label: 'Movie Folder Imported' },
+                            { value: '8', label: 'Movie File Renamed' },
+                            { value: '9', label: 'Download Ignored' },
                         ],
                     },
                 ],
             });
+            $('#node-input-sort_key').typedInput({
+                types: [
+                    {
+                        value: 'sort_key',
+                        options: [
+                            { value: 'date', label: 'Date' },
+                            { value: 'title', label: 'Movie Title' },
+                        ],
+                    },
+                ],
+            });
+            $('#node-input-sort_dir').typedInput({
+                types: [
+                    {
+                        value: 'sort_dir',
+                        options: [
+                            { value: 'descending', label: 'Descending' },
+                            { value: 'ascending', label: 'Ascending' },
+                        ],
+                    },
+                ],
+            });
+            $('#node-input-page').typedInput({
+                default: 'num',
+                typeField: $('#node-input-page_type'),
+                types: ['num', 'msg', 'flow', 'global', 'jsonata'],
+            });
+            $('#node-input-page_size').typedInput({
+                default: 'num',
+                typeField: $('#node-input-page_size_type'),
+                types: ['num', 'msg', 'flow', 'global', 'jsonata'],
+            });
         },
         oneditsave: function () {
             let movie_id = $('#node-input-movie_id').val();
-            if (!movie_id) {
-                $('#node-input-event_type').val('');
+            if (movie_id) {
+                $('#node-input-sort_key').val('');
+                $('#node-input-sort_dir').val('');
+                $('#node-input-page').val('');
+                $('#node-input-page_size').val('');
             }
         },
     });
