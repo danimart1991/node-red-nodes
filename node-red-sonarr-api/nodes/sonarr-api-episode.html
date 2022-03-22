@@ -1,4 +1,4 @@
-<script type="text/x-red" data-template-name="sonarr-api-episode-get">
+<script type="text/html" data-template-name="sonarr-api-episode-get">
     <div class="form-row">
         <label for="node-input-server"><i class="fa fa-server"></i> Server</label>
         <input type="text" id="node-input-server" />
@@ -7,7 +7,7 @@
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" />
     </div>
-    <hr align="middle"/>
+    <hr align="middle" />
     <div class="form-row">
         <label for="node-input-series_id"><i class="fa fa-hashtag"></i> Series Id</label>
         <input type="text" id="node-input-series_id" />
@@ -15,36 +15,39 @@
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="sonarr-api-episode-get">
-    <p>Get an <i>Array</i> of all the episodes stored in the <i>Sonarr</i> database. The <b>Id</b> of a <i>Series</i> must be included as a parameter to obtain only the episodes of that <i>Series</i>.</p>
+<script type="text/html" data-help-name="sonarr-api-episode-get">
+    <p>
+        Get an <i>Array</i> of all the episodes stored in the <i>Sonarr</i> database. The <b>Id</b> of a <i>Series</i> must be included as a parameter to obtain
+        only the episodes of that <i>Series</i>.
+    </p>
     <p>In addition, the second output provides a <b>Log</b> with information on how the execution has worked.</p>
 
     <h3>Parameters</h3>
     <dl class="message-properties">
         <dt>server <span class="property-type">sonarr-api-server</span></dt>
-        <dd> a <b>Sonarr Server</b> previously configured.</dd>
+        <dd>a <b>Sonarr Server</b> previously configured.</dd>
         <dt class="optional">series_id <span class="property-type">number</span></dt>
-        <dd> a Series <b>Id</b> used to return only this item.</dd>
+        <dd>a Series <b>Id</b> used to return only this item.</dd>
     </dl>
 
     <h3>Output 1 (Result)</h3>
     <dl class="message-properties">
         <dt>payload <span class="property-type">object</span></dt>
-        <dd> an <i>Array</i> with one or more episode <i>objects</i>.</dd>
+        <dd>an <i>Array</i> with one or more episode <i>objects</i>.</dd>
     </dl>
 
     <h3>Output 2 (Log)</h3>
     <dl class="message-properties">
         <dt>payload.level <span class="property-type">string</span></dt>
-        <dd> the log <b>Level</b>: <i>Debug</i>, <i>Info</i>, <i>Warn</i>, <i>Error</i>, <i>Critical</i> or <i>Other</i>.</dd>
+        <dd>the log <b>Level</b>: <i>Debug</i>, <i>Info</i>, <i>Warn</i>, <i>Error</i>, <i>Critical</i> or <i>Other</i>.</dd>
         <dt>payload.message <span class="property-type">string</span></dt>
-        <dd> the log <b>Message</b>.</dd>
+        <dd>the log <b>Message</b>.</dd>
         <dt>payload.source.id <span class="property-type">string</span></dt>
-        <dd> the <b>Id</b> of the node that threw the log.</dd>
+        <dd>the <b>Id</b> of the node that threw the log.</dd>
         <dt>payload.source.type <span class="property-type">string</span></dt>
-        <dd> the <b>Type</b> of the node that threw the log.</dd>
+        <dd>the <b>Type</b> of the node that threw the log.</dd>
         <dt>payload.source.name <span class="property-type">string</span></dt>
-        <dd> the <b>Name</b>, if set, of the node that threw the log.</dd>
+        <dd>the <b>Name</b>, if set, of the node that threw the log.</dd>
     </dl>
 </script>
 
