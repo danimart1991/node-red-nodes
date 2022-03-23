@@ -52,7 +52,7 @@ module.exports = function (RED) {
                                     break;
                                 case 404:
                                     level = 'Error';
-                                    message = "404 Not Found. Series with Id '${series_id}' not found.`";
+                                    message = `404 Not Found. Series with Id '${series_id}' not found.`;
                                     statusMessage = '404 not found';
                                     break;
                                 default:

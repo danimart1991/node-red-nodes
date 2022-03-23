@@ -56,7 +56,7 @@ module.exports = function (RED) {
                                     break;
                                 case 404:
                                     level = 'Error';
-                                    message = "404 Not Found. Movie File/s with Movie Id '${movie_id}' not found.`";
+                                    message = `404 Not Found. Movie File/s with Movie Id '${movie_id}' not found.`;
                                     statusMessage = '404 not found';
                                     break;
                                 default:
