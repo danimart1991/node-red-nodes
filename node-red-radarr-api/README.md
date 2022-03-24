@@ -29,7 +29,7 @@ Two parameters are required to properly configure this node:
 
 | Entity     | Get | Post | Put | Delete |
 | ---------- | :-: | ---- | --- | ------ |
-| Command    |  ✔  |      |     |        |
+| Command    |  ✔  | ✔    |     |        |
 | History    |  ✔  |      |     |        |
 | Movie      |  ✔  |      |     |        |
 | Movie File |  ✔  |      |     |        |

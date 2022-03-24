@@ -80,3 +80,153 @@
         },
     });
 </script>
+
+<script type="text/html" data-template-name="radarr-api-command-post">
+    <div class="form-row">
+        <label for="node-input-server"><i class="fa fa-server"></i> Server</label>
+        <input type="text" id="node-input-server" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name" />
+    </div>
+    <hr align="middle" />
+    <div class="form-row">
+        <label for="node-input-command_name"><i class="fa fa-tasks"></i> Command</label>
+        <input type="text" id="node-input-command_name" />
+    </div>
+    <hr align="middle" />
+    <div class="form-row" id="node-input-series_ids_optional_row">
+        <label for="node-input-series_ids_optional"><i class="fa fa-hashtag"></i> Series Id/s</label>
+        <input type="text" id="node-input-series_ids_optional" placeholder="Optional" />
+        <input type="hidden" id="node-input-series_ids_optional_type" />
+    </div>
+    <div class="form-row" id="node-input-series_ids_row">
+        <label for="node-input-series_ids"><i class="fa fa-hashtag"></i> Series Id/s</label>
+        <input type="text" id="node-input-series_ids" />
+        <input type="hidden" id="node-input-series_ids_type" />
+    </div>
+</script>
+
+<script type="text/html" data-help-name="radarr-api-command-post">
+    <p>
+        Sends a <i>Command</i> to the <i>Radarr System Tasks Queue</i>. The <b>Command</b> must have a name and could have additional required or optional
+        parameters.
+    </p>
+    <p>In addition, the second output provides a <b>Log</b> with information on how the execution has worked.</p>
+
+    <h3>Parameters</h3>
+    <dl class="message-properties">
+        <dt>server <span class="property-type">radarr-api-server</span></dt>
+        <dd>a <b>Radarr Server</b> previously configured.</dd>
+        <dt>command_name <span class="property-type">select</span></dt>
+        <dd>the <b>Command Name</b> that is going to be sent.</dd>
+        <dt class="optional">command_parameters <span class="property-type">object</span></dt>
+        <dd>depending on the selected <b>Command</b>, some options or others will be displayed for configuration.</dd>
+    </dl>
+
+    <h3>Output 1 (Result)</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>the info of the <b>Command</b> added to the <i>Task Queue</i>.</dd>
+    </dl>
+
+    <h3>Output 2 (Log)</h3>
+    <dl class="message-properties">
+        <dt>payload.level <span class="property-type">string</span></dt>
+        <dd>the log <b>Level</b>: <i>Debug</i>, <i>Info</i>, <i>Warn</i>, <i>Error</i>, <i>Critical</i> or <i>Other</i>.</dd>
+        <dt>payload.message <span class="property-type">string</span></dt>
+        <dd>the log <b>Message</b>.</dd>
+        <dt>payload.source.id <span class="property-type">string</span></dt>
+        <dd>the <b>Id</b> of the node that threw the log.</dd>
+        <dt>payload.source.type <span class="property-type">string</span></dt>
+        <dd>the <b>Type</b> of the node that threw the log.</dd>
+        <dt>payload.source.name <span class="property-type">string</span></dt>
+        <dd>the <b>Name</b>, if set, of the node that threw the log.</dd>
+    </dl>
+</script>
+
+<script type="text/javascript">
+    let commandOptions = [
+        { value: 'RenameMovie', label: 'Rename Movie/s', series_ids_optional: false, series_ids: 'required' },
+        { value: 'RefreshMovie', label: 'Update Movie/s', series_ids_optional: true, series_ids: false },
+    ];
+    let trimFields = ['series_ids_optional', 'series_ids'];
+    RED.nodes.registerType('radarr-api-command-post', {
+        category: 'radarr',
+        color: '#5d9cec',
+        defaults: {
+            name: { value: '' },
+            server: { value: '', type: 'radarr-api-server', required: true },
+            command_name: {
+                value: '',
+                required: true,
+                validate: function (v) {
+                    let selCommand = commandOptions.find((x) => x.value === v);
+                    // Show or Hide fields depending of selected command.
+                    trimFields.forEach(function (field) {
+                        let element = $('#node-input-' + field + '_row');
+                        !selCommand[field] || selCommand[field] === false ? element.hide() : element.show();
+                    });
+                    return true;
+                },
+            },
+            series_ids_optional: {
+                value: '',
+                validate: function (v) {
+                    let selCommand = commandOptions.find((x) => x.value === $('#node-input-command_name').val());
+                    return !(selCommand && selCommand.series_ids_optional && selCommand.series_ids_optional === 'required' && !v);
+                },
+            },
+            series_ids_optional_type: { value: 'num' },
+            series_ids: {
+                value: '',
+                validate: function (v) {
+                    let selCommand = commandOptions.find((x) => x.value === $('#node-input-command_name').val());
+                    return !(selCommand && selCommand.series_ids && selCommand.series_ids === 'required' && !v);
+                },
+            },
+            series_ids_type: { value: 'num' },
+        },
+        inputs: 1,
+        outputs: 2,
+        icon: 'font-awesome/fa-television',
+        label: function () {
+            return this.name || 'send command';
+        },
+        paletteLabel: function () {
+            return 'send command';
+        },
+        outputLabels: ['command', 'log'],
+        oneditprepare: function () {
+            $('#node-input-command_name').typedInput({
+                types: [
+                    {
+                        value: 'command_name',
+                        options: commandOptions,
+                    },
+                ],
+            });
+            $('#node-input-series_ids_optional').typedInput({
+                default: 'num',
+                typeField: $('#node-input-series_ids_optional_type'),
+                types: ['num', 'msg', 'flow', 'global', 'jsonata'],
+            });
+            $('#node-input-series_ids').typedInput({
+                default: 'num',
+                typeField: $('#node-input-series_ids_type'),
+                types: ['num', 'msg', 'flow', 'global', 'jsonata'],
+            });
+        },
+        oneditsave: function () {
+            let selCommand = commandOptions.find((x) => x.value === $('#node-input-command_name').val());
+            // Clean fields depending of selected command.
+            trimFields.forEach(function (field) {
+                let element = $('#node-input-' + field);
+                if (!selCommand[field] || selCommand[field] === false) {
+                    element.val('');
+                }
+            });
+        },
+    });
+</script>
