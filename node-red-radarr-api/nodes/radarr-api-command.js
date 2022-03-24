@@ -110,19 +110,19 @@ module.exports = function (RED) {
                 let message = 'Unknown Status.';
 
                 try {
-                    let series_ids_optional = RED.util.evaluateNodeProperty(config.series_ids_optional, config.series_ids_optional_type || 'num', node, msg);
-                    let series_ids = RED.util.evaluateNodeProperty(config.series_ids, config.series_ids_type || 'num', node, msg);
+                    let movie_ids_optional = RED.util.evaluateNodeProperty(config.movie_ids_optional, config.movie_ids_optional_type || 'num', node, msg);
+                    let movie_ids = RED.util.evaluateNodeProperty(config.movie_ids, config.movie_ids_type || 'num', node, msg);
                     let uri = 'command';
                     let data = { name: config.command_name };
-                    if (series_ids_optional) {
-                        data.seriesIds = Array.isArray(series_ids_optional) ? series_ids_optional : [series_ids_optional];
-                        if (!data.seriesIds.every((element) => typeof element === 'number')) {
+                    if (movie_ids_optional) {
+                        data.movieIds = Array.isArray(movie_ids_optional) ? movie_ids_optional : [movie_ids_optional];
+                        if (!data.movieIds.every((element) => typeof element === 'number')) {
                             throw 'Not all elements of Movie Id/s are numbers';
                         }
                     }
-                    if (series_ids) {
-                        data.seriesIds = Array.isArray(series_ids) ? series_ids : [series_ids];
-                        if (!data.seriesIds.every((element) => typeof element === 'number')) {
+                    if (movie_ids) {
+                        data.movieIds = Array.isArray(movie_ids) ? movie_ids : [movie_ids];
+                        if (!data.movieIds.every((element) => typeof element === 'number')) {
                             throw 'Not all elements of Movie Id/s are numbers';
                         }
                     }

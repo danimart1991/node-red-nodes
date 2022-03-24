@@ -96,15 +96,15 @@
         <input type="text" id="node-input-command_name" />
     </div>
     <hr align="middle" />
-    <div class="form-row" id="node-input-series_ids_optional_row">
-        <label for="node-input-series_ids_optional"><i class="fa fa-hashtag"></i> Series Id/s</label>
-        <input type="text" id="node-input-series_ids_optional" placeholder="Optional" />
-        <input type="hidden" id="node-input-series_ids_optional_type" />
+    <div class="form-row" id="node-input-movie_ids_optional_row">
+        <label for="node-input-movie_ids_optional"><i class="fa fa-hashtag"></i> Movie Id/s</label>
+        <input type="text" id="node-input-movie_ids_optional" placeholder="Optional" />
+        <input type="hidden" id="node-input-movie_ids_optional_type" />
     </div>
-    <div class="form-row" id="node-input-series_ids_row">
-        <label for="node-input-series_ids"><i class="fa fa-hashtag"></i> Series Id/s</label>
-        <input type="text" id="node-input-series_ids" />
-        <input type="hidden" id="node-input-series_ids_type" />
+    <div class="form-row" id="node-input-movie_ids_row">
+        <label for="node-input-movie_ids"><i class="fa fa-hashtag"></i> Movie Id/s</label>
+        <input type="text" id="node-input-movie_ids" />
+        <input type="hidden" id="node-input-movie_ids_type" />
     </div>
 </script>
 
@@ -148,13 +148,13 @@
 
 <script type="text/javascript">
     let commandOptions = [
-        { value: 'RenameMovie', label: 'Rename Movie/s', series_ids_optional: false, series_ids: 'required' },
-        { value: 'RefreshMovie', label: 'Update Movie/s', series_ids_optional: true, series_ids: false },
+        { value: 'RenameMovie', label: 'Rename Movie/s', movie_ids_optional: false, movie_ids: 'required' },
+        { value: 'RefreshMovie', label: 'Update Movie/s', movie_ids_optional: true, movie_ids: false },
     ];
-    let trimFields = ['series_ids_optional', 'series_ids'];
+    let trimFields = ['movie_ids_optional', 'movie_ids'];
     RED.nodes.registerType('radarr-api-command-post', {
         category: 'radarr',
-        color: '#5d9cec',
+        color: '#ffc230',
         defaults: {
             name: { value: '' },
             server: { value: '', type: 'radarr-api-server', required: true },
@@ -171,26 +171,26 @@
                     return true;
                 },
             },
-            series_ids_optional: {
+            movie_ids_optional: {
                 value: '',
                 validate: function (v) {
                     let selCommand = commandOptions.find((x) => x.value === $('#node-input-command_name').val());
-                    return !(selCommand && selCommand.series_ids_optional && selCommand.series_ids_optional === 'required' && !v);
+                    return !(selCommand && selCommand.movie_ids_optional && selCommand.movie_ids_optional === 'required' && !v);
                 },
             },
-            series_ids_optional_type: { value: 'num' },
-            series_ids: {
+            movie_ids_optional_type: { value: 'num' },
+            movie_ids: {
                 value: '',
                 validate: function (v) {
                     let selCommand = commandOptions.find((x) => x.value === $('#node-input-command_name').val());
-                    return !(selCommand && selCommand.series_ids && selCommand.series_ids === 'required' && !v);
+                    return !(selCommand && selCommand.movie_ids && selCommand.movie_ids === 'required' && !v);
                 },
             },
-            series_ids_type: { value: 'num' },
+            movie_ids_type: { value: 'num' },
         },
         inputs: 1,
         outputs: 2,
-        icon: 'font-awesome/fa-television',
+        icon: 'font-awesome/fa-play',
         label: function () {
             return this.name || 'send command';
         },
@@ -207,14 +207,14 @@
                     },
                 ],
             });
-            $('#node-input-series_ids_optional').typedInput({
+            $('#node-input-movie_ids_optional').typedInput({
                 default: 'num',
-                typeField: $('#node-input-series_ids_optional_type'),
+                typeField: $('#node-input-movie_ids_optional_type'),
                 types: ['num', 'msg', 'flow', 'global', 'jsonata'],
             });
-            $('#node-input-series_ids').typedInput({
+            $('#node-input-movie_ids').typedInput({
                 default: 'num',
-                typeField: $('#node-input-series_ids_type'),
+                typeField: $('#node-input-movie_ids_type'),
                 types: ['num', 'msg', 'flow', 'global', 'jsonata'],
             });
         },
