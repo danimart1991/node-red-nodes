@@ -43,22 +43,6 @@ Two parameters are required to properly configure this node:
 | Movie      |  ✔  |      |     |        |
 | Movie File |  ✔  |      |     |        |
 
-### Get Movie/s
-
-Get an _Array_ of all the movies stored in the _Radarr_ database. The **Id** of a movie can be included as an additional parameter to obtain only the data of that movie.
-
-### Get Movie File/s
-
-Get an _Array_ of all the movie files stored in the _Radarr_ database. The **Id** of a movie must be included as parameter to obtain the files of that movie.
-
-### Get Command/s
-
-Get an _Array_ of all the commands stored in the _Radarr System Tasks Queue_. The **Id** of a command can be included as an additional parameter to obtain only the data of that command.
-
-### Get (Movie) Histories
-
-Get an _Array_ with histories stored in the _Radarr_ database. The **Id** of a movie can be included as an additional parameter to obtain only the data of that movie.
-
 ### Log
 
 In addition, all the nodes have a **Log** output that offers information on how the execution has worked.
