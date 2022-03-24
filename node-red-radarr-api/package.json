@@ -1,6 +1,6 @@
 {
     "name": "@danimart1991/node-red-radarr-api",
-    "version": "0.5.0",
+    "version": "0.6.0",
     "description": "A set of Node-RED nodes to use with Radarr API.",
     "license": "Apache-2.0",
     "homepage": "https://github.com/danimart1991/node-red-nodes/node-red-radarr-api",
