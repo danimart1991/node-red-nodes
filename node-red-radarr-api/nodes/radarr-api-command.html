@@ -147,11 +147,11 @@
 </script>
 
 <script type="text/javascript">
-    let commandOptions = [
+    let radarrCommandPostOptions = [
         { value: 'RenameMovie', label: 'Rename Movie/s', movie_ids_optional: false, movie_ids: 'required' },
         { value: 'RefreshMovie', label: 'Update Movie/s', movie_ids_optional: true, movie_ids: false },
     ];
-    let trimFields = ['movie_ids_optional', 'movie_ids'];
+    let radarrCommandPostFields = ['movie_ids_optional', 'movie_ids'];
     RED.nodes.registerType('radarr-api-command-post', {
         category: 'radarr',
         color: '#ffc230',
@@ -162,9 +162,9 @@
                 value: '',
                 required: true,
                 validate: function (v) {
-                    let selCommand = commandOptions.find((x) => x.value === v);
+                    let selCommand = radarrCommandPostOptions.find((x) => x.value === v);
                     // Show or Hide fields depending of selected command.
-                    trimFields.forEach(function (field) {
+                    radarrCommandPostFields.forEach(function (field) {
                         let element = $('#node-input-' + field + '_row');
                         !selCommand[field] || selCommand[field] === false ? element.hide() : element.show();
                     });
@@ -174,7 +174,7 @@
             movie_ids_optional: {
                 value: '',
                 validate: function (v) {
-                    let selCommand = commandOptions.find((x) => x.value === $('#node-input-command_name').val());
+                    let selCommand = radarrCommandPostOptions.find((x) => x.value === $('#node-input-command_name').val());
                     return !(selCommand && selCommand.movie_ids_optional && selCommand.movie_ids_optional === 'required' && !v);
                 },
             },
@@ -182,7 +182,7 @@
             movie_ids: {
                 value: '',
                 validate: function (v) {
-                    let selCommand = commandOptions.find((x) => x.value === $('#node-input-command_name').val());
+                    let selCommand = radarrCommandPostOptions.find((x) => x.value === $('#node-input-command_name').val());
                     return !(selCommand && selCommand.movie_ids && selCommand.movie_ids === 'required' && !v);
                 },
             },
@@ -203,7 +203,7 @@
                 types: [
                     {
                         value: 'command_name',
-                        options: commandOptions,
+                        options: radarrCommandPostOptions,
                     },
                 ],
             });
@@ -219,9 +219,9 @@
             });
         },
         oneditsave: function () {
-            let selCommand = commandOptions.find((x) => x.value === $('#node-input-command_name').val());
+            let selCommand = radarrCommandPostOptions.find((x) => x.value === $('#node-input-command_name').val());
             // Clean fields depending of selected command.
-            trimFields.forEach(function (field) {
+            radarrCommandPostFields.forEach(function (field) {
                 let element = $('#node-input-' + field);
                 if (!selCommand[field] || selCommand[field] === false) {
                     element.val('');

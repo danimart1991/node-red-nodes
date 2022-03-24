@@ -147,11 +147,11 @@
 </script>
 
 <script type="text/javascript">
-    let commandOptions = [
+    let sonarrCommandPostOptions = [
         { value: 'RenameSeries', label: 'Rename Series', series_id: false, series_ids: 'required' },
         { value: 'RefreshSeries', label: 'Update Series', series_id: true, series_ids: false },
     ];
-    let trimFields = ['series_id', 'series_ids'];
+    let sonarrCommandPostFields = ['series_id', 'series_ids'];
     RED.nodes.registerType('sonarr-api-command-post', {
         category: 'sonarr',
         color: '#5d9cec',
@@ -162,9 +162,9 @@
                 value: '',
                 required: true,
                 validate: function (v) {
-                    let selCommand = commandOptions.find((x) => x.value === v);
+                    let selCommand = sonarrCommandPostOptions.find((x) => x.value === v);
                     // Show or Hide fields depending of selected command.
-                    trimFields.forEach(function (field) {
+                    sonarrCommandPostFields.forEach(function (field) {
                         let element = $('#node-input-' + field + '_row');
                         !selCommand[field] || selCommand[field] === false ? element.hide() : element.show();
                     });
@@ -174,7 +174,7 @@
             series_id: {
                 value: '',
                 validate: function (v) {
-                    let selCommand = commandOptions.find((x) => x.value === $('#node-input-command_name').val());
+                    let selCommand = sonarrCommandPostOptions.find((x) => x.value === $('#node-input-command_name').val());
                     return !(selCommand && selCommand.series_id && selCommand.series_id === 'required' && !v);
                 },
             },
@@ -182,7 +182,7 @@
             series_ids: {
                 value: '',
                 validate: function (v) {
-                    let selCommand = commandOptions.find((x) => x.value === $('#node-input-command_name').val());
+                    let selCommand = sonarrCommandPostOptions.find((x) => x.value === $('#node-input-command_name').val());
                     return !(selCommand && selCommand.series_ids && selCommand.series_ids === 'required' && !v);
                 },
             },
@@ -203,7 +203,7 @@
                 types: [
                     {
                         value: 'command_name',
-                        options: commandOptions,
+                        options: sonarrCommandPostOptions,
                     },
                 ],
             });
@@ -219,9 +219,9 @@
             });
         },
         oneditsave: function () {
-            let selCommand = commandOptions.find((x) => x.value === $('#node-input-command_name').val());
+            let selCommand = sonarrCommandPostOptions.find((x) => x.value === $('#node-input-command_name').val());
             // Clean fields depending of selected command.
-            trimFields.forEach(function (field) {
+            sonarrCommandPostFields.forEach(function (field) {
                 let element = $('#node-input-' + field);
                 if (!selCommand[field] || selCommand[field] === false) {
                     element.val('');
