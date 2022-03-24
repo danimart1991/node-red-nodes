@@ -1,5 +1,11 @@
 # Node-RED Nodes
 
+[![Platform](https://img.shields.io/badge/platform-Node--RED-red)](https://nodered.org)
+![License](https://img.shields.io/github/license/danimart1991/node-red-nodes.svg)
+![GitHub last commit](https://img.shields.io/github/last-commit/danimart1991/node-red-nodes.svg)
+[![Tip Me via PayPal](https://img.shields.io/badge/PayPal-tip%20me-blue.svg?logo=paypal&style=flat)](https://www.paypal.me/danimart1991)
+[![Sponsor Me via GitHub](https://img.shields.io/badge/GitHub-sponsor%20me-blue.svg?logo=github&style=flat)](https://github.com/sponsors/danimart1991)
+
 A collection of my personal palette nodes (modules) for [_Node-RED_](http://nodered.org/).
 
 ## Available Nodes

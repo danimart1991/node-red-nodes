@@ -1,5 +1,14 @@
 # @danimart1991/node-red-radarr-api
 
+[![Platform](https://img.shields.io/badge/platform-Node--RED-red)](https://nodered.org)
+![License](https://img.shields.io/github/license/danimart1991/node-red-nodes.svg)
+[![NPM](https://img.shields.io/npm/v/@danimart1991/node-red-radarr-api?logo=npm)](https://www.npmjs.org/package/@danimart1991/node-red-radarr-api)
+[![Known Vulnerabilities](https://snyk.io/test/npm/@danimart1991/node-red-radarr-api/badge.svg)](https://snyk.io/test/npm/@danimart1991/node-red-radarr-api)
+[![Total Downloads](https://img.shields.io/npm/dt/@danimart1991/node-red-radarr-api.svg)](https://www.npmjs.com/package/@danimart1991/node-red-radarr-api)
+![GitHub last commit](https://img.shields.io/github/last-commit/danimart1991/node-red-nodes.svg)
+[![Tip Me via PayPal](https://img.shields.io/badge/PayPal-tip%20me-blue.svg?logo=paypal&style=flat)](https://www.paypal.me/danimart1991)
+[![Sponsor Me via GitHub](https://img.shields.io/badge/GitHub-sponsor%20me-blue.svg?logo=github&style=flat)](https://github.com/sponsors/danimart1991)
+
 A set of [_Node-RED_](http://nodered.org/) nodes to use with [_Radarr API_](https://radarr.video/).
 
 ## Install
