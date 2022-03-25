@@ -1,0 +1,229 @@
+<script type="text/html" data-template-name="radarr-api-movieeditor-put">
+    <div class="form-row">
+        <label for="node-input-server"><i class="fa fa-server"></i> Server</label>
+        <input type="text" id="node-input-server" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name" />
+    </div>
+    <hr align="middle" />
+    <div class="form-row">
+        <label for="node-input-movie_ids"><i class="fa fa-hashtag"></i> Movie Id/s</label>
+        <input type="text" id="node-input-movie_ids" />
+        <input type="hidden" id="node-input-movie_ids_type" />
+    </div>
+    <hr align="middle" />
+    <div class="form-row">
+        <label for="node-input-monitored"><i class="fa fa-bookmark"></i> Monitored</label>
+        <select type="text" id="node-input-monitored" style="width: 70%;">
+            <option value="-1">No Change</option>
+            <option value="true">Monitor</option>
+            <option value="false">UnMonitor</option>
+        </select>
+    </div>
+    <div class="form-row" id="node-input-quality_profile_row">
+        <label for="node-input-quality_profile"><i class="fa fa-ticket"></i> Quality Profile</label>
+        <input type="text" style="vertical-align: text-bottom;" placeholder="Loading Quality Profiles..." disabled />
+    </div>
+    <div class="form-row">
+        <label for="node-input-minimum_availability"><i class="fa fa-ticket"></i> Minimum Availability</label>
+        <select type="text" id="node-input-minimum_availability" style="width: 70%;vertical-align: text-bottom;">
+            <option value="-1">No Change</option>
+            <option value="announced">Announced</option>
+            <option value="inCinemas">In Cinemas</option>
+            <option value="released">Released</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-apply_tags"><i class="fa fa-tags"></i> Tags</label>
+        <select type="text" id="node-input-apply_tags" style="width: 70%;">
+            <option value="-1">No Change</option>
+            <option value="add">Add</option>
+            <option value="remove">Remove</option>
+            <option value="replace">Replace</option>
+        </select>
+    </div>
+    <div class="form-row" id="node-input-tags_row">
+        <div type="text" id="node-input-tags">
+            <input type="text" style="margin-left:105px;" placeholder="Loading Tags..." disabled />
+        </div>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="radarr-api-movieeditor-put">
+    <p>Launch <i>Movie Editor</i> to modify one or more movies with diferent common parameters.</p>
+    <p>In addition, the second output provides a <b>Log</b> with information on how the execution has worked.</p>
+
+    <h3>Parameters</h3>
+    <dl class="message-properties">
+        <dt>server<span class="property-type">radarr-api-server</span></dt>
+        <dd>a <b>Radarr Server</b> previously configured.</dd>
+        <dt>movie_ids<span class="property-type">array</span></dt>
+        <dd>list of Movie <b>Id/s</b> to modify.</dd>
+        <dt class="optional">monitored<span class="property-type">select</span></dt>
+        <dd>select if you want to <i>No Change, Monitor or UnMonitor</i> the <b>Movie/s</b>.</dd>
+        <dt class="optional">quality_profile<span class="property-type">select</span></dt>
+        <dd>select if you want to <i>No Change or Change</i> the <b>Movie/s Quality Profile</b>.</dd>
+        <dt class="optional">minimum_availability<span class="property-type">select</span></dt>
+        <dd>select if you want to <i>No Change</i> or put on <i>Announced, In Cinemas or Released</i> the <b>Movie/s Minimum Availability</b>.</dd>
+        <dt class="optional">apply_tags+tags<span class="property-type">select</span></dt>
+        <dd>
+            select if you want to <i>No Change</i> or <i>Add, Remove or Replace</i> the <b>Movie/s Tags</b>. Note that <i>Replace</i> will change all the tags
+            with the entered tags (enter no tags to clear all tags).
+        </dd>
+    </dl>
+
+    <h3>Output 1 (Result)</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>an <i>Array</i> with one or more modified movie <i>objects</i>.</dd>
+    </dl>
+
+    <h3>Output 2 (Log)</h3>
+    <dl class="message-properties">
+        <dt>payload.level <span class="property-type">string</span></dt>
+        <dd>the log <b>Level</b>: <i>Debug</i>, <i>Info</i>, <i>Warn</i>, <i>Error</i>, <i>Critical</i> or <i>Other</i>.</dd>
+        <dt>payload.message <span class="property-type">string</span></dt>
+        <dd>the log <b>Message</b>.</dd>
+        <dt>payload.source.id <span class="property-type">string</span></dt>
+        <dd>the <b>Id</b> of the node that threw the log.</dd>
+        <dt>payload.source.type <span class="property-type">string</span></dt>
+        <dd>the <b>Type</b> of the node that threw the log.</dd>
+        <dt>payload.source.name <span class="property-type">string</span></dt>
+        <dd>the <b>Name</b>, if set, of the node that threw the log.</dd>
+    </dl>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('radarr-api-movieeditor-put', {
+        category: 'radarr',
+        color: '#ffc230',
+        defaults: {
+            name: { value: '' },
+            server: { value: '', type: 'radarr-api-server', required: true },
+            movie_ids: { value: '', required: true },
+            movie_ids_type: { value: 'num' },
+            monitored: { value: '', required: true },
+            quality_profile: { value: '', required: true },
+            minimum_availability: { value: '', required: true },
+            apply_tags: { value: '', required: true },
+            tags: { value: '' },
+        },
+        inputs: 1,
+        outputs: 2,
+        icon: 'font-awesome/fa-play',
+        label: function () {
+            return this.name || 'movie/s editor';
+        },
+        paletteLabel: function () {
+            return 'movie/s editor';
+        },
+        outputLabels: ['movie/s', 'log'],
+        oneditprepare: function () {
+            var node = this;
+            $('#node-input-server').on('change', function () {
+                let serverNode = $('#node-input-server');
+                if (serverNode.val() !== undefined && serverNode.val() !== '') {
+                    let server = RED.nodes.node(serverNode.val());
+                    if (server) {
+                        getTags(node.tags);
+                        getQualityProfiles(node.quality_profile);
+                    }
+                }
+            });
+            $('#node-input-apply_tags').on('change', function () {
+                if ($('#node-input-apply_tags').val() == -1) {
+                    $('#node-input-tags_row').hide();
+                } else {
+                    $('#node-input-tags_row').show();
+                }
+            });
+            $('#node-input-movie_ids').typedInput({
+                default: 'num',
+                typeField: $('#node-input-movie_ids_type'),
+                types: ['num', 'msg', 'flow', 'global', 'jsonata'],
+            });
+        },
+        oneditsave: function () {
+            let apply_tags_value = $('#node-input-apply_tags').val();
+            if (apply_tags_value && apply_tags_value != -1) {
+                let tagsValues = [];
+                $.each($("input[name='radarr-api-movieeditor-tags']:checked"), function () {
+                    tagsValues.push($(this).val());
+                });
+                $('#node-input-tags').val(tagsValues);
+            } else {
+                $('#node-input-tags').val('');
+            }
+        },
+    });
+
+    function getQualityProfiles(currentValue) {
+        try {
+            let serverNode = $('#node-input-server').val();
+            let label = '<label for="node-input-quality_profile" style="margin-right: 4px;"><i class="fa fa-ticket"></i> Quality Profile</label>';
+            let qualityprofileContainer = $('#node-input-quality_profile_row');
+            $.get('radarr-api/' + serverNode + '/qualityprofile', function (response) {
+                if (response && Array.isArray(response)) {
+                    let qualityProfiles = `${label}<select type="text" id="node-input-quality_profile" style="width: 70%;vertical-align: text-bottom;">`;
+                    qualityProfiles += '<option value="-1">No Change</option>';
+                    response.forEach((qp) => (qualityProfiles += '<option value="' + qp.id + '">' + qp.name + '</option>'));
+                    qualityprofileContainer.empty();
+                    qualityprofileContainer.append(qualityProfiles);
+                    if (currentValue && response.find((qb) => qb.id == currentValue)) {
+                        $('#node-input-quality_profile').val(currentValue);
+                    }
+                } else {
+                    qualityprofileContainer.empty();
+                    qualityprofileContainer.append(
+                        `${label}<input type="text" style="vertical-align: text-bottom;" placeholder="Can\'t get Quality Profiles. Check log for info." disabled />`
+                    );
+                }
+            });
+        } catch (err) {
+            qualityprofileContainer.empty();
+            qualityprofileContainer.append(
+                `${label}<input type="text" style="vertical-align: text-bottom;" placeholder="Can\'t get Quality Profiles. Check log for info." disabled />`
+            );
+        }
+    }
+
+    function getTags(currentValue) {
+        try {
+            let serverNode = $('#node-input-server').val();
+            let tagsNode = $('#node-input-tags');
+            $.get('radarr-api/' + serverNode + '/tag', function (response) {
+                if (response && Array.isArray(response)) {
+                    let newNodes = response.map(
+                        (tag) =>
+                            '<label>&nbsp;</label><input type="checkbox" name="radarr-api-movieeditor-tags" value="' +
+                            tag.id +
+                            '" style="display:inline-block;width:auto;vertical-align:top;margin-left:12px;" /> ' +
+                            tag.label +
+                            '<br />'
+                    );
+                    tagsNode.empty();
+                    tagsNode.append(newNodes);
+                    if (currentValue) {
+                        if (!Array.isArray(currentValue)) {
+                            currentValue = currentValue.split(',');
+                        }
+                        currentValue.forEach((value) => {
+                            let checkbox = $("input[type='checkbox'][name='radarr-api-movieeditor-tags'][value='" + value + "']");
+                            if (checkbox) {
+                                checkbox[0].checked = true;
+                            }
+                        });
+                    }
+                } else {
+                    tagsNode.empty();
+                    tagsNode.append('<input type="text" style="margin-left:105px;" placeholder="Can\'t get Tags. Check log for info." disabled />');
+                }
+            });
+        } catch (err) {
+            tagsNode.empty();
+            tagsNode.append('<input type="text" style="margin-left:105px;" placeholder="Can\'t get Tags. Check log for info." disabled />');
+        }
+    }
+</script>

@@ -23,6 +23,7 @@
             "radarr-api-command": "nodes/radarr-api-command.js",
             "radarr-api-history": "nodes/radarr-api-history.js",
             "radarr-api-movie": "nodes/radarr-api-movie.js",
+            "radarr-api-movieeditor": "nodes/radarr-api-movieeditor.js",
             "radarr-api-moviefile": "nodes/radarr-api-moviefile.js",
             "radarr-api-server": "nodes/radarr-api-server.js"
         }

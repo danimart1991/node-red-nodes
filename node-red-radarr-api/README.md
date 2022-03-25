@@ -11,6 +11,8 @@
 
 A set of [_Node-RED_](http://nodered.org/) nodes to use with [_Radarr API_](https://radarr.video/).
 
+> **WARNING:** This palette of nodes can leave the _Radarr_ database inconsistent if not handled carefully. Take special care when applying values, for example: _Assigning a non-existent Quality Profile to a Movie._
+
 ## Install
 
 As other custom nodes, the recommendation is to install using [the "_Manage Palettes_" option in _Node-RED_](https://nodered.org/docs/user-guide/runtime/adding-nodes).
@@ -36,12 +38,13 @@ Two parameters are required to properly configure this node:
 
 ### Nodes
 
-| Entity     | Get | Post | Put | Delete |
-| ---------- | :-: | :--: | --- | ------ |
-| Command    |  ✔  |  ✔   |     |        |
-| History    |  ✔  |      |     |        |
-| Movie      |  ✔  |      |     |        |
-| Movie File |  ✔  |      |     |        |
+| Entity       | Get | Post | Put | Delete |
+| ------------ | :-: | :--: | :-: | :----: |
+| Command      |  ✔  |  ✔   |     |        |
+| History      |  ✔  |      |     |        |
+| Movie        |  ✔  |      |     |        |
+| Movie Editor |  -  |  -   |  ✔  |        |
+| Movie File   |  ✔  |      |     |        |
 
 ### Log
 
