@@ -117,13 +117,23 @@ module.exports = function (RED) {
                     if (movie_ids_optional) {
                         data.movieIds = Array.isArray(movie_ids_optional) ? movie_ids_optional : [movie_ids_optional];
                         if (!data.movieIds.every((element) => typeof element === 'number')) {
-                            throw 'Not all elements of Movie Id/s are numbers';
+                            level = 'Error';
+                            message = 'Not all elements of Movie Id/s are numbers';
+                            statusMessage = "can't send command";
+
+                            server.sendOutput(node, msg, nodeType, level, message, statusMessage);
+                            return;
                         }
                     }
                     if (movie_ids) {
                         data.movieIds = Array.isArray(movie_ids) ? movie_ids : [movie_ids];
                         if (!data.movieIds.every((element) => typeof element === 'number')) {
-                            throw 'Not all elements of Movie Id/s are numbers';
+                            level = 'Error';
+                            message = 'Not all elements of Movie Id/s are numbers';
+                            statusMessage = "can't send command";
+
+                            server.sendOutput(node, msg, nodeType, level, message, statusMessage);
+                            return;
                         }
                     }
 

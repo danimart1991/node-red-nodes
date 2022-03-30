@@ -120,7 +120,12 @@ module.exports = function (RED) {
                     if (series_ids) {
                         data.seriesIds = Array.isArray(series_ids) ? series_ids : [series_ids];
                         if (!data.seriesIds.every((element) => typeof element === 'number')) {
-                            throw 'Not all elements of Series Id/s are numbers';
+                            level = 'Error';
+                            message = 'Not all elements of Series Id/s are numbers';
+                            statusMessage = "can't send command";
+
+                            server.sendOutput(node, msg, nodeType, level, message, statusMessage);
+                            return;
                         }
                     }
 
