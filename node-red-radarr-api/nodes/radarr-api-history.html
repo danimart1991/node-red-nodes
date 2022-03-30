@@ -103,13 +103,7 @@
             server: { value: '', type: 'radarr-api-server', required: true },
             include_movie: { value: '' },
             include_movie_type: { value: 'bool' },
-            movie_id: {
-                value: '',
-                validate: function (value) {
-                    value ? $('#node-input-order_row').hide() : $('#node-input-order_row').show();
-                    return true;
-                },
-            },
+            movie_id: { value: '' },
             movie_id_type: { value: 'num' },
             event_type: { value: '' },
             sort_key: { value: '' },
@@ -134,6 +128,13 @@
                 default: 'bool',
                 typeField: $('#node-input-include_movie_type'),
                 types: ['bool'],
+            });
+            $('#node-input-movie_id').on('change', function (element) {
+                if (element.currentTarget.value) {
+                    $('#node-input-order_row').hide();
+                } else {
+                    $('#node-input-order_row').show();
+                }
             });
             $('#node-input-movie_id').typedInput({
                 default: 'num',

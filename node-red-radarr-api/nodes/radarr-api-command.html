@@ -158,19 +158,7 @@
         defaults: {
             name: { value: '' },
             server: { value: '', type: 'radarr-api-server', required: true },
-            command_name: {
-                value: '',
-                required: true,
-                validate: function (v) {
-                    let selCommand = radarrCommandPostOptions.find((x) => x.value === v);
-                    // Show or Hide fields depending of selected command.
-                    radarrCommandPostFields.forEach(function (field) {
-                        let element = $('#node-input-' + field + '_row');
-                        !selCommand[field] || selCommand[field] === false ? element.hide() : element.show();
-                    });
-                    return true;
-                },
-            },
+            command_name: { value: '', required: true },
             movie_ids_optional: {
                 value: '',
                 validate: function (v) {
@@ -199,6 +187,14 @@
         },
         outputLabels: ['command', 'log'],
         oneditprepare: function () {
+            $('#node-input-command_name').on('change', function (element) {
+                let selCommand = radarrCommandPostOptions.find((x) => x.value === element.currentTarget.value);
+                // Show or Hide fields depending of selected command.
+                radarrCommandPostFields.forEach(function (field) {
+                    let element = $('#node-input-' + field + '_row');
+                    !selCommand[field] || selCommand[field] === false ? element.hide() : element.show();
+                });
+            });
             $('#node-input-command_name').typedInput({
                 types: [
                     {

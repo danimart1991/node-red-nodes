@@ -122,18 +122,18 @@
         outputLabels: ['movie/s', 'log'],
         oneditprepare: function () {
             var node = this;
-            $('#node-input-server').on('change', function () {
-                let serverNode = $('#node-input-server');
-                if (serverNode.val() !== undefined && serverNode.val() !== '') {
-                    let server = RED.nodes.node(serverNode.val());
+            $('#node-input-server').on('change', function (element) {
+                let serverNode = element.currentTarget.value;
+                if (serverNode && serverNode !== '') {
+                    let server = RED.nodes.node(serverNode);
                     if (server) {
                         getTags(node.tags);
                         getQualityProfiles(node.quality_profile);
                     }
                 }
             });
-            $('#node-input-apply_tags').on('change', function () {
-                if ($('#node-input-apply_tags').val() == -1) {
+            $('#node-input-apply_tags').on('change', function (element) {
+                if (element.currentTarget.value == -1) {
                     $('#node-input-tags_row').hide();
                 } else {
                     $('#node-input-tags_row').show();
