@@ -101,7 +101,7 @@ module.exports = function (RED) {
             this.server = RED.nodes.getNode(config.server);
 
             node.on('input', function (msg) {
-                node.status({ fill: 'blue', shape: 'dot', text: 'obtaining command/s' });
+                node.status({ fill: 'blue', shape: 'dot', text: 'sending command' });
                 let server = this.server;
                 let nodeType = 'sonarr-api-command-post';
 
