@@ -54,6 +54,11 @@ module.exports = function (RED) {
                             if (config.quality_profile) {
                                 data.qualityProfileId = config.quality_profile;
                             }
+                            if (config.root_folder) {
+                                data.rootFolderPath = config.root_folder;
+                                let move_files = RED.util.evaluateNodeProperty(config.move_files, 'bool', node, msg);
+                                data.moveFiles = move_files;
+                            }
                             if (config.minimum_availability) {
                                 data.minimumAvailability = config.minimum_availability;
                             }

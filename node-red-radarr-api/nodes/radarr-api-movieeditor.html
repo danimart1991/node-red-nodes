@@ -14,6 +14,7 @@
         <input type="hidden" id="node-input-movie_ids_type" />
     </div>
     <hr align="middle" />
+    <div class="form-tips" style="margin-bottom: 12px;">Try not to make different modifications at the same time.</b></div>
     <div class="form-row">
         <label for="node-input-monitored"><i class="fa fa-bookmark"></i> Monitored</label>
         <select type="text" id="node-input-monitored" style="width: 70%;">
@@ -22,9 +23,11 @@
             <option value="false">UnMonitor</option>
         </select>
     </div>
-    <div class="form-row" id="node-input-quality_profile_row">
+    <div class="form-row">
         <label for="node-input-quality_profile"><i class="fa fa-ticket"></i> Quality Profile</label>
-        <input type="text" style="vertical-align: text-bottom;" placeholder="Loading Quality Profiles..." disabled />
+        <select type="text" id="node-input-quality_profile" style="width: 70%;" disabled>
+            <option value="" selected>Loading Quality Profiles...</option>
+        </select>
     </div>
     <div class="form-row">
         <label for="node-input-minimum_availability"><i class="fa fa-ticket"></i> Minimum Availability</label>
@@ -34,6 +37,17 @@
             <option value="inCinemas">In Cinemas</option>
             <option value="released">Released</option>
         </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-root_folder"><i class="fa fa-folder"></i> Root Folder</label>
+        <select type="text" id="node-input-root_folder" style="width: 70%;" disabled>
+            <option value="" selected>Loading Root Folders...</option>
+        </select>
+    </div>
+    <div class="form-row" id="node-input-move_files_row">
+        <label for="node-input-move_files"><i class="fa fa-exchange"></i> Move Files</label>
+        <input type="text" id="node-input-move_files" />
+        <input type="hidden" id="node-input-move_files_type" />
     </div>
     <div class="form-row">
         <label for="node-input-apply_tags"><i class="fa fa-tags"></i> Tags</label>
@@ -67,6 +81,10 @@
         <dd>select if you want to <i>No Change or Change</i> the <b>Movie/s Quality Profile</b>.</dd>
         <dt class="optional">minimum_availability<span class="property-type">select</span></dt>
         <dd>select if you want to <i>No Change</i> or put on <i>Announced, In Cinemas or Released</i> the <b>Movie/s Minimum Availability</b>.</dd>
+        <dt class="optional">root_folder<span class="property-type">select</span></dt>
+        <dd>select if you want to <i>No Change or Change</i> the <b>Movie/s Root Folder</b>.</dd>
+        <dt>move_files <span class="property-type">bool</span></dt>
+        <dd>move <b>Movie Files</b> when a <i>Root Folder</i> is changed.</dd>
         <dt class="optional">apply_tags+tags<span class="property-type">select</span></dt>
         <dd>
             select if you want to <i>No Change</i> or <i>Add, Remove or Replace</i> the <b>Movie/s Tags</b>. Note that <i>Replace</i> will change all the tags
@@ -107,6 +125,9 @@
             monitored: { value: '' },
             quality_profile: { value: '' },
             minimum_availability: { value: '' },
+            root_folder: { value: '' },
+            move_files: { value: false },
+            move_files_type: { value: 'bool' },
             apply_tags: { value: '' },
             tags: { value: '' },
         },
@@ -123,8 +144,9 @@
         oneditprepare: function () {
             var node = this;
             $('#node-input-server').on('change', function () {
-                getTags(node.tags);
                 getQualityProfiles(node.quality_profile);
+                getRootFolders(node.root_folder);
+                getTags(node.tags);
             });
             $('#node-input-apply_tags').on('change', function (element) {
                 if (element.currentTarget.value) {
@@ -133,10 +155,22 @@
                     $('#node-input-tags_row').hide();
                 }
             });
+            $('#node-input-root_folder').on('change', function (element) {
+                if ($('#node-input-root_folder').val()) {
+                    $('#node-input-move_files_row').show();
+                } else if ($('#node-input-root_folder').val() == '') {
+                    $('#node-input-move_files_row').hide();
+                }
+            });
             $('#node-input-movie_ids').typedInput({
                 default: 'num',
                 typeField: $('#node-input-movie_ids_type'),
                 types: ['num', 'msg', 'flow', 'global', 'jsonata'],
+            });
+            $('#node-input-move_files').typedInput({
+                default: 'bool',
+                typeField: $('#node-input-move_files_type'),
+                types: ['bool'],
             });
         },
         oneditsave: function () {
@@ -149,6 +183,9 @@
             } else {
                 $('#node-input-tags').val('');
             }
+            if (!$('#node-input-root_folder').val()) {
+                $('#node-input-move_files').val(false);
+            }
         },
     });
 
@@ -158,17 +195,16 @@
             if (!serverNode || serverNode == '' || serverNode == '_ADD_') {
                 setErrorQualityProfiles();
             } else {
-                let label = '<label for="node-input-quality_profile" style="margin-right: 4px;"><i class="fa fa-ticket"></i> Quality Profile</label>';
-                let qualityprofileContainer = $('#node-input-quality_profile_row');
+                let qualityProfileSelect = $('#node-input-quality_profile');
                 $.get('radarr-api/' + serverNode + '/qualityprofile', function (response) {
                     if (response && Array.isArray(response)) {
-                        let qualityProfiles = `${label}<select type="text" id="node-input-quality_profile" style="width: 70%;vertical-align: text-bottom;">`;
-                        qualityProfiles += '<option value="">No Change</option>';
-                        response.forEach((qp) => (qualityProfiles += '<option value="' + qp.id + '">' + qp.name + '</option>'));
-                        qualityprofileContainer.empty();
-                        qualityprofileContainer.append(qualityProfiles);
-                        if (currentValue && response.find((qb) => qb.id == currentValue)) {
-                            $('#node-input-quality_profile').val(currentValue);
+                        qualityProfileSelect.empty();
+                        qualityProfileSelect.removeAttr('disabled');
+                        qualityProfileSelect.append('<option value="" selected>No Change</option>');
+                        response
+                            .forEach((qp) => qualityProfileSelect.append('<option value="' + qp.id + '">' + qp.name + '</option>'));
+                        if (currentValue && response.find((qp) => qp.id == currentValue)) {
+                            qualityProfileSelect.val(currentValue);
                         }
                     } else {
                         setErrorQualityProfiles();
@@ -181,11 +217,45 @@
     }
 
     function setErrorQualityProfiles() {
-        let qualityprofileContainer = $('#node-input-quality_profile_row');
-        qualityprofileContainer.empty();
-        qualityprofileContainer.append(
-            `<label for="node-input-quality_profile" style="margin-right: 4px;"><i class="fa fa-ticket"></i> Quality Profile</label><input type="text" style="vertical-align: text-bottom;" placeholder="Can\'t get Quality Profiles. Check log for info." disabled />`
-        );
+        let qualityProfileSelect = $('#node-input-quality_profile');
+        qualityProfileSelect.empty();
+        qualityProfileSelect.attr('disabled', 'disabled');
+        qualityProfileSelect.append(`<option value="" selected>Can\'t get Quality Profiles. Check log for info.</option>`);
+    }
+
+    function getRootFolders(currentValue) {
+        try {
+            let serverNode = $('#node-input-server').val();
+            if (!serverNode || serverNode == '' || serverNode == '_ADD_') {
+                setErrorRootFolders();
+            } else {
+                let rootFolderSelect = $('#node-input-root_folder');
+                $.get('radarr-api/' + serverNode + '/rootFolder', function (response) {
+                    if (response && Array.isArray(response)) {
+                        rootFolderSelect.empty();
+                        rootFolderSelect.removeAttr('disabled');
+                        rootFolderSelect.append('<option value="" selected>No Change</option>');
+                        response
+                            .filter((rf) => rf.accessible)
+                            .forEach((rf) => rootFolderSelect.append('<option value="' + rf.path + '">' + rf.path + '</option>'));
+                        if (currentValue && response.find((rf) => rf.path == currentValue)) {
+                            rootFolderSelect.val(currentValue);
+                        }
+                    } else {
+                        setErrorRootFolders();
+                    }
+                });
+            }
+        } catch (err) {
+            setErrorRootFolders();
+        }
+    }
+
+    function setErrorRootFolders() {
+        let rootFolderSelect = $('#node-input-root_folder');
+        rootFolderSelect.empty();
+        rootFolderSelect.attr('disabled', 'disabled');
+        rootFolderSelect.append(`<option value="" selected>Can\'t get Root Folders. Check log for info.</option>`);
     }
 
     function getTags(currentValue) {
