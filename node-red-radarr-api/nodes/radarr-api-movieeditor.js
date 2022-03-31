@@ -44,20 +44,20 @@ module.exports = function (RED) {
                             server.sendOutput(node, msg, nodeType, level, message, statusMessage);
                         } else {
                             let uri = 'movie/editor';
-                            if (config.monitored && config.monitored != -1) {
+                            if (config.monitored) {
                                 if (config.monitored == true || config.monitored == 'true') {
                                     data.monitored = true;
                                 } else if (config.monitored == false || config.monitored == 'false') {
                                     data.monitored = false;
                                 }
                             }
-                            if (config.quality_profile && config.quality_profile != -1) {
+                            if (config.quality_profile) {
                                 data.qualityProfileId = config.quality_profile;
                             }
-                            if (config.minimum_availability && config.minimum_availability != -1) {
+                            if (config.minimum_availability) {
                                 data.minimumAvailability = config.minimum_availability;
                             }
-                            if (config.apply_tags && config.apply_tags != -1) {
+                            if (config.apply_tags) {
                                 data.applyTags = config.apply_tags;
                                 let tags = config.tags
                                     .toString()
@@ -78,9 +78,9 @@ module.exports = function (RED) {
                             server
                                 .put(uri, null, data, null)
                                 .then(function (response) {
-                                    msg.payload = response.body;
                                     switch (response.status) {
                                         case 202:
+                                            msg.payload = response.body;
                                             level = 'Info';
                                             message = `${Array.isArray(msg.payload) ? msg.payload.length : 1} Movie/s edited`;
                                             statusMessage = message.toLowerCase();

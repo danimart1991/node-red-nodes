@@ -17,7 +17,7 @@
     <div class="form-row">
         <label for="node-input-monitored"><i class="fa fa-bookmark"></i> Monitored</label>
         <select type="text" id="node-input-monitored" style="width: 70%;">
-            <option value="-1">No Change</option>
+            <option value="">No Change</option>
             <option value="true">Monitor</option>
             <option value="false">UnMonitor</option>
         </select>
@@ -29,7 +29,7 @@
     <div class="form-row">
         <label for="node-input-minimum_availability"><i class="fa fa-ticket"></i> Minimum Availability</label>
         <select type="text" id="node-input-minimum_availability" style="width: 70%;vertical-align: text-bottom;">
-            <option value="-1">No Change</option>
+            <option value="">No Change</option>
             <option value="announced">Announced</option>
             <option value="inCinemas">In Cinemas</option>
             <option value="released">Released</option>
@@ -38,7 +38,7 @@
     <div class="form-row">
         <label for="node-input-apply_tags"><i class="fa fa-tags"></i> Tags</label>
         <select type="text" id="node-input-apply_tags" style="width: 70%;">
-            <option value="-1">No Change</option>
+            <option value="">No Change</option>
             <option value="add">Add</option>
             <option value="remove">Remove</option>
             <option value="replace">Replace</option>
@@ -104,10 +104,10 @@
             server: { value: '', type: 'radarr-api-server', required: true },
             movie_ids: { value: '', required: true },
             movie_ids_type: { value: 'num' },
-            monitored: { value: '', required: true },
-            quality_profile: { value: '', required: true },
-            minimum_availability: { value: '', required: true },
-            apply_tags: { value: '', required: true },
+            monitored: { value: '' },
+            quality_profile: { value: '' },
+            minimum_availability: { value: '' },
+            apply_tags: { value: '' },
             tags: { value: '' },
         },
         inputs: 1,
@@ -122,21 +122,15 @@
         outputLabels: ['movie/s', 'log'],
         oneditprepare: function () {
             var node = this;
-            $('#node-input-server').on('change', function (element) {
-                let serverNode = element.currentTarget.value;
-                if (serverNode && serverNode !== '') {
-                    let server = RED.nodes.node(serverNode);
-                    if (server) {
-                        getTags(node.tags);
-                        getQualityProfiles(node.quality_profile);
-                    }
-                }
+            $('#node-input-server').on('change', function () {
+                getTags(node.tags);
+                getQualityProfiles(node.quality_profile);
             });
             $('#node-input-apply_tags').on('change', function (element) {
-                if (element.currentTarget.value == -1) {
-                    $('#node-input-tags_row').hide();
-                } else {
+                if (element.currentTarget.value) {
                     $('#node-input-tags_row').show();
+                } else {
+                    $('#node-input-tags_row').hide();
                 }
             });
             $('#node-input-movie_ids').typedInput({
@@ -146,8 +140,7 @@
             });
         },
         oneditsave: function () {
-            let apply_tags_value = $('#node-input-apply_tags').val();
-            if (apply_tags_value && apply_tags_value != -1) {
+            if ($('#node-input-apply_tags').val()) {
                 let tagsValues = [];
                 $.each($("input[name='radarr-api-movieeditor-tags']:checked"), function () {
                     tagsValues.push($(this).val());
@@ -162,68 +155,82 @@
     function getQualityProfiles(currentValue) {
         try {
             let serverNode = $('#node-input-server').val();
-            let label = '<label for="node-input-quality_profile" style="margin-right: 4px;"><i class="fa fa-ticket"></i> Quality Profile</label>';
-            let qualityprofileContainer = $('#node-input-quality_profile_row');
-            $.get('radarr-api/' + serverNode + '/qualityprofile', function (response) {
-                if (response && Array.isArray(response)) {
-                    let qualityProfiles = `${label}<select type="text" id="node-input-quality_profile" style="width: 70%;vertical-align: text-bottom;">`;
-                    qualityProfiles += '<option value="-1">No Change</option>';
-                    response.forEach((qp) => (qualityProfiles += '<option value="' + qp.id + '">' + qp.name + '</option>'));
-                    qualityprofileContainer.empty();
-                    qualityprofileContainer.append(qualityProfiles);
-                    if (currentValue && response.find((qb) => qb.id == currentValue)) {
-                        $('#node-input-quality_profile').val(currentValue);
+            if (!serverNode || serverNode == '' || serverNode == '_ADD_') {
+                setErrorQualityProfiles();
+            } else {
+                let label = '<label for="node-input-quality_profile" style="margin-right: 4px;"><i class="fa fa-ticket"></i> Quality Profile</label>';
+                let qualityprofileContainer = $('#node-input-quality_profile_row');
+                $.get('radarr-api/' + serverNode + '/qualityprofile', function (response) {
+                    if (response && Array.isArray(response)) {
+                        let qualityProfiles = `${label}<select type="text" id="node-input-quality_profile" style="width: 70%;vertical-align: text-bottom;">`;
+                        qualityProfiles += '<option value="">No Change</option>';
+                        response.forEach((qp) => (qualityProfiles += '<option value="' + qp.id + '">' + qp.name + '</option>'));
+                        qualityprofileContainer.empty();
+                        qualityprofileContainer.append(qualityProfiles);
+                        if (currentValue && response.find((qb) => qb.id == currentValue)) {
+                            $('#node-input-quality_profile').val(currentValue);
+                        }
+                    } else {
+                        setErrorQualityProfiles();
                     }
-                } else {
-                    qualityprofileContainer.empty();
-                    qualityprofileContainer.append(
-                        `${label}<input type="text" style="vertical-align: text-bottom;" placeholder="Can\'t get Quality Profiles. Check log for info." disabled />`
-                    );
-                }
-            });
+                });
+            }
         } catch (err) {
-            qualityprofileContainer.empty();
-            qualityprofileContainer.append(
-                `${label}<input type="text" style="vertical-align: text-bottom;" placeholder="Can\'t get Quality Profiles. Check log for info." disabled />`
-            );
+            setErrorQualityProfiles();
         }
+    }
+
+    function setErrorQualityProfiles() {
+        let qualityprofileContainer = $('#node-input-quality_profile_row');
+        qualityprofileContainer.empty();
+        qualityprofileContainer.append(
+            `<label for="node-input-quality_profile" style="margin-right: 4px;"><i class="fa fa-ticket"></i> Quality Profile</label><input type="text" style="vertical-align: text-bottom;" placeholder="Can\'t get Quality Profiles. Check log for info." disabled />`
+        );
     }
 
     function getTags(currentValue) {
         try {
             let serverNode = $('#node-input-server').val();
-            let tagsNode = $('#node-input-tags');
-            $.get('radarr-api/' + serverNode + '/tag', function (response) {
-                if (response && Array.isArray(response)) {
-                    let newNodes = response.map(
-                        (tag) =>
-                            '<label>&nbsp;</label><input type="checkbox" name="radarr-api-movieeditor-tags" value="' +
-                            tag.id +
-                            '" style="display:inline-block;width:auto;vertical-align:top;margin-left:12px;" /> ' +
-                            tag.label +
-                            '<br />'
-                    );
-                    tagsNode.empty();
-                    tagsNode.append(newNodes);
-                    if (currentValue) {
-                        if (!Array.isArray(currentValue)) {
-                            currentValue = currentValue.split(',');
-                        }
-                        currentValue.forEach((value) => {
-                            let checkbox = $("input[type='checkbox'][name='radarr-api-movieeditor-tags'][value='" + value + "']");
-                            if (checkbox) {
-                                checkbox[0].checked = true;
+            if (!serverNode || serverNode == '' || serverNode == '_ADD_') {
+                setErrorTags();
+            } else {
+                let tagsNode = $('#node-input-tags');
+                $.get('radarr-api/' + serverNode + '/tag', function (response) {
+                    if (response && Array.isArray(response)) {
+                        let newNodes = response.map(
+                            (tag) =>
+                                '<label>&nbsp;</label><input type="checkbox" name="radarr-api-movieeditor-tags" value="' +
+                                tag.id +
+                                '" style="display:inline-block;width:auto;vertical-align:top;margin-left:12px;" /> ' +
+                                tag.label +
+                                '<br />'
+                        );
+                        tagsNode.empty();
+                        tagsNode.append(newNodes);
+                        if (currentValue) {
+                            if (!Array.isArray(currentValue)) {
+                                currentValue = currentValue.split(',');
                             }
-                        });
+                            currentValue.forEach((value) => {
+                                let checkbox = $("input[type='checkbox'][name='radarr-api-movieeditor-tags'][value='" + value + "']");
+                                if (checkbox) {
+                                    checkbox[0].checked = true;
+                                }
+                            });
+                        }
+                    } else {
+                        setErrorTags();
                     }
-                } else {
-                    tagsNode.empty();
-                    tagsNode.append('<input type="text" style="margin-left:105px;" placeholder="Can\'t get Tags. Check log for info." disabled />');
-                }
-            });
+                });
+            }
         } catch (err) {
-            tagsNode.empty();
-            tagsNode.append('<input type="text" style="margin-left:105px;" placeholder="Can\'t get Tags. Check log for info." disabled />');
+            setErrorTags();
         }
+    }
+
+    function setErrorTags() {
+        let tagsNode = $('#node-input-tags');
+        tagsNode.empty();
+        tagsNode.append('<input type="text" style="margin-left:105px;" placeholder="Can\'t get Tags. Check log for info." disabled />');
     }
 </script>
