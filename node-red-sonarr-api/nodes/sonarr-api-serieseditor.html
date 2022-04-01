@@ -1,0 +1,360 @@
+<script type="text/html" data-template-name="sonarr-api-serieseditor-put">
+    <div class="form-row">
+        <label for="node-input-server"><i class="fa fa-server"></i> Server</label>
+        <input type="text" id="node-input-server" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name" />
+    </div>
+    <hr align="middle" />
+    <div class="form-row">
+        <label for="node-input-series_ids"><i class="fa fa-hashtag"></i> Series Id/s</label>
+        <input type="text" id="node-input-series_ids" />
+        <input type="hidden" id="node-input-series_ids_type" />
+    </div>
+    <hr align="middle" />
+    <div class="form-tips" style="margin-bottom: 12px;">Try not to make different modifications at the same time.</b></div>
+    <div class="form-row">
+        <label for="node-input-monitored"><i class="fa fa-bookmark"></i> Monitored</label>
+        <select type="text" id="node-input-monitored" style="width: 70%;">
+            <option value="">No Change</option>
+            <option value="true">Monitor</option>
+            <option value="false">UnMonitor</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-quality_profile"><i class="fa fa-video-camera"></i> Quality Profile</label>
+        <select type="text" id="node-input-quality_profile" style="width: 70%;vertical-align: text-bottom;" disabled>
+            <option value="" selected>Loading Quality Profiles...</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-language_profile"><i class="fa fa-language"></i> Language Profile</label>
+        <select type="text" id="node-input-language_profile" style="width: 70%;vertical-align: text-bottom;" disabled>
+            <option value="" selected>Loading Language Profiles...</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-series_type"><i class="fa fa-ticket"></i> Series Type</label>
+        <select type="text" id="node-input-series_type" style="width: 70%;">
+            <option value="">No Change</option>
+            <option value="standard">Standard</option>
+            <option value="daily">Daily</option>
+            <option value="anime">Anime</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-season_folder"><i class="fa fa-list-ol"></i> Season Folder</label>
+        <select type="text" id="node-input-season_folder" style="width: 70%;">
+            <option value="">No Change</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-root_folder"><i class="fa fa-folder"></i> Root Folder</label>
+        <select type="text" id="node-input-root_folder" style="width: 70%;" disabled>
+            <option value="" selected>Loading Root Folders...</option>
+        </select>
+    </div>
+    <div class="form-row" id="node-input-move_files_row">
+        <label for="node-input-move_files"><i class="fa fa-exchange"></i> Move Files</label>
+        <input type="text" id="node-input-move_files" />
+        <input type="hidden" id="node-input-move_files_type" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-apply_tags"><i class="fa fa-tags"></i> Tags</label>
+        <select type="text" id="node-input-apply_tags" style="width: 70%;">
+            <option value="">No Change</option>
+            <option value="add">Add</option>
+            <option value="remove">Remove</option>
+            <option value="replace">Replace</option>
+        </select>
+    </div>
+    <div class="form-row" id="node-input-tags_row">
+        <div type="text" id="node-input-tags">
+            <input type="text" style="margin-left:105px;" placeholder="Loading Tags..." disabled />
+        </div>
+    </div>
+    <hr align="middle" />
+</script>
+
+<script type="text/html" data-help-name="sonarr-api-serieseditor-put">
+    <p>Launch <i>Series Editor</i> to modify one or more series with diferent common parameters.</p>
+    <p>In addition, the second output provides a <b>Log</b> with information on how the execution has worked.</p>
+
+    <h3>Parameters</h3>
+    <dl class="message-properties">
+        <dt>server<span class="property-type">sonarr-api-server</span></dt>
+        <dd>a <b>Sonarr Server</b> previously configured.</dd>
+        <dt>series_ids<span class="property-type">array</span></dt>
+        <dd>list of Series <b>Id/s</b> to modify.</dd>
+        <dt class="optional">monitored<span class="property-type">select</span></dt>
+        <dd>select if you want to <i>No Change, Monitor or UnMonitor</i> the <b>Series</b>.</dd>
+        <dt class="optional">quality_profile<span class="property-type">select</span></dt>
+        <dd>select if you want to <i>No Change or Change</i> the <b>Series Quality Profile</b>.</dd>
+        <dt class="optional">language_profile<span class="property-type">select</span></dt>
+        <dd>select if you want to <i>No Change or Change</i> the <b>Series Language Profile</b>.</dd>
+        <dt class="optional">series_type<span class="property-type">select</span></dt>
+        <dd>select if you want to <i>No Change</i> or put on <i>Standard, Daily or Anime</i> the <b>Series Type</b>.</dd>
+        <dt class="optional">season_folder<span class="property-type">select</span></dt>
+        <dd>select if you want to <i>No Change or Change</i> if the <b>Series</b> must be sorted into season folders.</dd>
+        <dt class="optional">root_folder<span class="property-type">select</span></dt>
+        <dd>select if you want to <i>No Change or Change</i> the <b>Series Root Folder</b>.</dd>
+        <dt>move_files <span class="property-type">bool</span></dt>
+        <dd>move <b>Series Files</b> when a <i>Root Folder</i> is changed.</dd>
+        <dt class="optional">apply_tags+tags<span class="property-type">select</span></dt>
+        <dd>
+            select if you want to <i>No Change</i> or <i>Add, Remove or Replace</i> the <b>Series Tags</b>. Note that <i>Replace</i> will change all the tags
+            with the entered tags (enter no tags to clear all tags).
+        </dd>
+    </dl>
+
+    <h3>Output 1 (Result)</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>an <i>Array</i> with one or more modified series <i>objects</i>.</dd>
+    </dl>
+
+    <h3>Output 2 (Log)</h3>
+    <dl class="message-properties">
+        <dt>payload.level <span class="property-type">string</span></dt>
+        <dd>the log <b>Level</b>: <i>Debug</i>, <i>Info</i>, <i>Warn</i>, <i>Error</i>, <i>Critical</i> or <i>Other</i>.</dd>
+        <dt>payload.message <span class="property-type">string</span></dt>
+        <dd>the log <b>Message</b>.</dd>
+        <dt>payload.source.id <span class="property-type">string</span></dt>
+        <dd>the <b>Id</b> of the node that threw the log.</dd>
+        <dt>payload.source.type <span class="property-type">string</span></dt>
+        <dd>the <b>Type</b> of the node that threw the log.</dd>
+        <dt>payload.source.name <span class="property-type">string</span></dt>
+        <dd>the <b>Name</b>, if set, of the node that threw the log.</dd>
+    </dl>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('sonarr-api-serieseditor-put', {
+        category: 'sonarr',
+        color: '#5d9cec',
+        defaults: {
+            name: { value: '' },
+            server: { value: '', type: 'sonarr-api-server', required: true },
+            series_ids: { value: '', required: true },
+            series_ids_type: { value: 'num' },
+            monitored: { value: '' },
+            quality_profile: { value: '' },
+            language_profile: { value: '' },
+            series_type: { value: '' },
+            season_folder: { value: '' },
+            root_folder: { value: '' },
+            move_files: { value: false },
+            move_files_type: { value: 'bool' },
+            apply_tags: { value: '' },
+            tags: { value: '' },
+        },
+        inputs: 1,
+        outputs: 2,
+        icon: 'font-awesome/fa-television',
+        label: function () {
+            return this.name || 'series editor';
+        },
+        paletteLabel: function () {
+            return 'series editor';
+        },
+        outputLabels: ['series', 'log'],
+        oneditprepare: function () {
+            var node = this;
+            $('#node-input-server').on('change', function () {
+                getQualityProfiles(node.quality_profile);
+                getLanguageProfiles(node.language_profile);
+                getRootFolders(node.root_folder);
+                getTags(node.tags);
+            });
+            $('#node-input-apply_tags').on('change', function (element) {
+                if (element.currentTarget.value) {
+                    $('#node-input-tags_row').show();
+                } else {
+                    $('#node-input-tags_row').hide();
+                }
+            });
+            $('#node-input-root_folder').on('change', function (element) {
+                if ($('#node-input-root_folder').val()) {
+                    $('#node-input-move_files_row').show();
+                } else if ($('#node-input-root_folder').val() == '') {
+                    $('#node-input-move_files_row').hide();
+                }
+            });
+            $('#node-input-series_ids').typedInput({
+                default: 'num',
+                typeField: $('#node-input-series_ids_type'),
+                types: ['num', 'msg', 'flow', 'global', 'jsonata'],
+            });
+            $('#node-input-move_files').typedInput({
+                default: 'bool',
+                typeField: $('#node-input-move_files_type'),
+                types: ['bool'],
+            });
+        },
+        oneditsave: function () {
+            if ($('#node-input-apply_tags').val()) {
+                let tagsValues = [];
+                $.each($("input[name='sonarr-api-serieseditor-tags']:checked"), function () {
+                    tagsValues.push($(this).val());
+                });
+                $('#node-input-tags').val(tagsValues);
+            } else {
+                $('#node-input-tags').val('');
+            }
+            if (!$('#node-input-root_folder').val()) {
+                $('#node-input-move_files').val(false);
+            }
+        },
+    });
+
+    function getQualityProfiles(currentValue) {
+        try {
+            let serverNode = $('#node-input-server').val();
+            if (!serverNode || serverNode == '' || serverNode == '_ADD_') {
+                setErrorQualityProfiles();
+            } else {
+                let qualityProfileSelect = $('#node-input-quality_profile');
+                $.get('sonarr-api/' + serverNode + '/qualityprofile', function (response) {
+                    if (response && Array.isArray(response)) {
+                        qualityProfileSelect.empty();
+                        qualityProfileSelect.removeAttr('disabled');
+                        qualityProfileSelect.append('<option value="" selected>No Change</option>');
+                        response.forEach((qp) => qualityProfileSelect.append('<option value="' + qp.id + '">' + qp.name + '</option>'));
+                        if (currentValue && response.find((qp) => qp.id == currentValue)) {
+                            qualityProfileSelect.val(currentValue);
+                        }
+                    } else {
+                        setErrorQualityProfiles();
+                    }
+                });
+            }
+        } catch (err) {
+            setErrorQualityProfiles();
+        }
+    }
+
+    function setErrorQualityProfiles() {
+        let qualityProfileSelect = $('#node-input-quality_profile');
+        qualityProfileSelect.empty();
+        qualityProfileSelect.attr('disabled', 'disabled');
+        qualityProfileSelect.append(`<option value="" selected>Can\'t get Quality Profiles. Check log for info.</option>`);
+    }
+
+    function getLanguageProfiles(currentValue) {
+        try {
+            let serverNode = $('#node-input-server').val();
+            if (!serverNode || serverNode == '' || serverNode == '_ADD_') {
+                setErrorLanguageProfiles();
+            } else {
+                let languageProfileSelect = $('#node-input-language_profile');
+                $.get('sonarr-api/' + serverNode + '/languageprofile', function (response) {
+                    if (response && Array.isArray(response)) {
+                        languageProfileSelect.empty();
+                        languageProfileSelect.removeAttr('disabled');
+                        languageProfileSelect.append('<option value="" selected>No Change</option>');
+                        response.forEach((lp) => languageProfileSelect.append('<option value="' + lp.id + '">' + lp.name + '</option>'));
+                        if (currentValue && response.find((lp) => lp.id == currentValue)) {
+                            languageProfileSelect.val(currentValue);
+                        }
+                    } else {
+                        setErrorLanguageProfiles();
+                    }
+                });
+            }
+        } catch (err) {
+            setErrorLanguageProfiles();
+        }
+    }
+
+    function setErrorLanguageProfiles() {
+        let languageProfileSelect = $('#node-input-language_profile');
+        languageProfileSelect.empty();
+        languageProfileSelect.attr('disabled', 'disabled');
+        languageProfileSelect.append(`<option value="" selected>Can\'t get Language Profiles. Check log for info.</option>`);
+    }
+
+    function getRootFolders(currentValue) {
+        try {
+            let serverNode = $('#node-input-server').val();
+            if (!serverNode || serverNode == '' || serverNode == '_ADD_') {
+                setErrorRootFolders();
+            } else {
+                let rootFolderSelect = $('#node-input-root_folder');
+                $.get('sonarr-api/' + serverNode + '/rootFolder', function (response) {
+                    if (response && Array.isArray(response)) {
+                        rootFolderSelect.empty();
+                        rootFolderSelect.removeAttr('disabled');
+                        rootFolderSelect.append('<option value="" selected>No Change</option>');
+                        response
+                            .filter((rf) => rf.accessible)
+                            .forEach((rf) => rootFolderSelect.append('<option value="' + rf.path + '">' + rf.path + '</option>'));
+                        if (currentValue && response.find((rf) => rf.path == currentValue)) {
+                            rootFolderSelect.val(currentValue);
+                        }
+                    } else {
+                        setErrorRootFolders();
+                    }
+                });
+            }
+        } catch (err) {
+            setErrorRootFolders();
+        }
+    }
+
+    function setErrorRootFolders() {
+        let rootFolderSelect = $('#node-input-root_folder');
+        rootFolderSelect.empty();
+        rootFolderSelect.attr('disabled', 'disabled');
+        rootFolderSelect.append(`<option value="" selected>Can\'t get Root Folders. Check log for info.</option>`);
+    }
+
+    function getTags(currentValue) {
+        try {
+            let serverNode = $('#node-input-server').val();
+            if (!serverNode || serverNode == '' || serverNode == '_ADD_') {
+                setErrorTags();
+            } else {
+                let tagsNode = $('#node-input-tags');
+                $.get('sonarr-api/' + serverNode + '/tag', function (response) {
+                    if (response && Array.isArray(response)) {
+                        let newNodes = response.map(
+                            (tag) =>
+                                '<label>&nbsp;</label><input type="checkbox" name="sonarr-api-serieseditor-tags" value="' +
+                                tag.id +
+                                '" style="display:inline-block;width:auto;vertical-align:top;margin-left:12px;" /> ' +
+                                tag.label +
+                                '<br />'
+                        );
+                        tagsNode.empty();
+                        tagsNode.append(newNodes);
+                        if (currentValue) {
+                            if (!Array.isArray(currentValue)) {
+                                currentValue = currentValue.split(',');
+                            }
+                            currentValue.forEach((value) => {
+                                let checkbox = $("input[type='checkbox'][name='sonarr-api-serieseditor-tags'][value='" + value + "']");
+                                if (checkbox) {
+                                    checkbox[0].checked = true;
+                                }
+                            });
+                        }
+                    } else {
+                        setErrorTags();
+                    }
+                });
+            }
+        } catch (err) {
+            setErrorTags();
+        }
+    }
+
+    function setErrorTags() {
+        let tagsNode = $('#node-input-tags');
+        tagsNode.empty();
+        tagsNode.append('<input type="text" style="margin-left:105px;" placeholder="Can\'t get Tags. Check log for info." disabled />');
+    }
+</script>

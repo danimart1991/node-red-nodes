@@ -37,6 +37,18 @@ module.exports = function (RED) {
         },
     });
 
+    RED.httpAdmin.get('/sonarr-api/:id/:method', RED.auth.needsPermission('sonarr-api.read'), function (req, res, next) {
+        var serverNode = RED.nodes.getNode(req.params.id);
+        serverNode
+            .get(req.params.method)
+            .then(function (response) {
+                res.send(response.body);
+            })
+            .catch(function (err) {
+                res.send(`Can't get ${req.params.method}s`);
+            });
+    });
+
     SonarrApiServerNode.prototype.get = function (uri, opts) {
         let node = this;
         opts = opts || {};
@@ -81,6 +93,36 @@ module.exports = function (RED) {
         }
         return new Promise(function (resolve, reject) {
             request.post(options, function (err, response, body) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve({
+                        status: response.statusCode,
+                        body: body,
+                    });
+                }
+            });
+        });
+    };
+
+    SonarrApiServerNode.prototype.put = function (uri, opts, data, formData) {
+        let node = this;
+        opts = opts || {};
+        opts.apikey = node.credentials.api_key;
+        var options = {
+            baseUrl: node.credentials.url,
+            uri: '/api/v3/' + uri,
+            json: true,
+            qs: opts,
+        };
+        if (data) {
+            options.body = data;
+        }
+        if (formData) {
+            options.formData = formData;
+        }
+        return new Promise(function (resolve, reject) {
+            request.put(options, function (err, response, body) {
                 if (err) {
                     reject(err);
                 } else {

@@ -25,6 +25,7 @@
             "sonarr-api-episodefile": "nodes/sonarr-api-episodefile.js",
             "sonarr-api-history": "nodes/sonarr-api-history.js",
             "sonarr-api-series": "nodes/sonarr-api-series.js",
+            "sonarr-api-serieseditor": "nodes/sonarr-api-serieseditor.js",
             "sonarr-api-server": "nodes/sonarr-api-server.js"
         }
     },
