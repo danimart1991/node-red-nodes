@@ -1,0 +1,101 @@
+<script type="text/html" data-template-name="docker-server">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="Name" />
+    </div>
+    <div id="node-config-input-url-row">
+        <hr align="middle" />
+        <div class="form-row">
+            <label for="node-config-input-host_name"><i class="fa fa-globe"></i> URL</label>
+            <input type="text" id="node-config-input-host_name" placeholder="http://localhost" />
+        </div>
+        <div class="form-row">
+            <label for="node-config-input-port"><i class="fa fa-globe"></i> Port</label>
+            <input type="text" id="node-config-input-port" placeholder="2375" />
+            <input type="hidden" id="node-config-input-port-type" />
+        </div>
+        <div class="form-tips" style="margin-bottom: 12px;">
+            If you expose the <i>"TCP-Daemon port"</i>, this is the <b>URL</b> used to connect to <b>Docker Server</b>, including <i>http(s)://</i> and
+            <i>port</i>.
+        </div>
+    </div>
+    <div id="node-config-input-socket_path-row">
+        <hr align="middle" />
+        <div class="form-row">
+            <label for="node-config-input-socket_path"><i class="fa fa-key"></i> Socket Path</label>
+            <input type="text" id="node-config-input-socket_path" placeholder="/var/run/docker.sock" />
+        </div>
+        <div class="form-tips" style="margin-bottom: 12px;">
+            <b>Socket Path</b> used to connect to <b>Docker Server</b>. If you are using <i>Node-RED</i> in a <i>Docker Container</i>, <i>Node-RED</i> must have
+            access to this <b>Socket Path</b> and you have to add the <i>Docker Group Id</i> to the container with <code>--group-add 250</code>.
+        </div>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="docker-server">
+    <p>A <b>configuration</b> node that holds the credentials of a <i>Docker</i> server.</p>
+
+    <h3>Parameters</h3>
+    <dl class="message-properties">
+        <dt>url+port <span class="property-type">string</span></dt>
+        <dd><b>URL</b> used to connect to <b>Docker Server</b>, including <i>http(s)://</i>, <i>port</i>, and <i>urlbase</i> if required.</dd>
+        <dt>socket_path <span class="property-type">string</span></dt>
+        <dd>The <b>Socket Path</b> used to connect to the <b>Docker Server</b>.</dd>
+    </dl>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('docker-server', {
+        category: 'config',
+        defaults: {
+            name: { value: '' },
+        },
+        credentials: {
+            host_name: { type: 'text' },
+            port: { type: 'text' },
+            socket_path: { type: 'text' },
+        },
+        label: function () {
+            return this.name || this.id;
+        },
+        exportable: false,
+        oneditprepare: function () {
+            $('#node-config-input-port').typedInput({
+                default: 'num',
+                typeField: $('#node-config-input-port-type'),
+                types: ['num'],
+            });
+            $('#node-config-input-host_name').on('change', function () {
+                if (!$('#node-config-input-host_name').val() && !$('#node-config-input-port').val()) {
+                    $('#node-config-input-socket_path-row').show();
+                } else {
+                    $('#node-config-input-socket_path-row').hide();
+                }
+            });
+            $('#node-config-input-port').on('change', function () {
+                if (!$('#node-config-input-host_name').val() && !$('#node-config-input-port').val()) {
+                    $('#node-config-input-socket_path-row').show();
+                } else {
+                    $('#node-config-input-socket_path-row').hide();
+                }
+            });
+            $('#node-config-input-socket_path').on('change', function () {
+                if (!$('#node-config-input-socket_path').val()) {
+                    $('#node-config-input-url-row').show();
+                } else {
+                    $('#node-config-input-url-row').hide();
+                }
+            });
+        },
+        oneditsave: function () {
+            let trimFields = ['host_name', 'socket_path'];
+            // In case some white space or end slash has sneaked in when copy-paste the fields.
+            trimFields.forEach(function (field) {
+                let value = $('#node-config-input-' + field)
+                    .val()
+                    .replace(/^\s+|\s+$|\/$/gm, '');
+                $('#node-config-input-' + field).val(value);
+            });
+        },
+    });
+</script>

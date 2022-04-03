@@ -1,0 +1,136 @@
+<script type="text/html" data-template-name="docker-containers">
+    <div class="form-row">
+        <label for="node-input-server"><i class="fa fa-server"></i> Server</label>
+        <input type="text" id="node-input-server" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name" />
+    </div>
+    <hr align="middle" />
+    <div class="form-row">
+        <label for="node-input-command_name"><i class="fa fa-tasks"></i> Command</label>
+        <input type="text" id="node-input-command_name" />
+    </div>
+    <hr align="middle" />
+    <div class="form-row" id="node-input-container_id-row">
+        <label for="node-input-container_id"><i class="fa fa-hashtag"></i> Container Id/Name</label>
+        <input type="text" id="node-input-container_id" />
+        <input type="hidden" id="node-input-container_id_type" />
+    </div>
+</script>
+
+<script type="text/html" data-help-name="docker-containers">
+    <p>Sends a <i>Command</i> to the <i>Docker Server</i>. The <b>Command</b> must have a name and could have additional required or optional parameters.</p>
+    <p>In addition, the second output provides a <b>Log</b> with information on how the execution has worked.</p>
+
+    <h3>Parameters</h3>
+    <dl class="message-properties">
+        <dt>server <span class="property-type">docker-server</span></dt>
+        <dd>a <b>Docker Server</b> previously configured.</dd>
+        <dt>command_name <span class="property-type">select</span></dt>
+        <dd>the <b>Command Name</b> that is going to be sent.</dd>
+        <dt class="optional">command_parameters <span class="property-type">object</span></dt>
+        <dd>depending on the selected <b>Command</b>, some options or others will be displayed for configuration.</dd>
+    </dl>
+
+    <h3>Output 1 (Result)</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>sometimes include the <i>Command</i> result <i>Object</i>.</dd>
+    </dl>
+
+    <h3>Output 2 (Log)</h3>
+    <dl class="message-properties">
+        <dt>payload.level <span class="property-type">string</span></dt>
+        <dd>the log <b>Level</b>: <i>Debug</i>, <i>Info</i>, <i>Warn</i>, <i>Error</i>, <i>Critical</i> or <i>Other</i>.</dd>
+        <dt>payload.message <span class="property-type">string</span></dt>
+        <dd>the log <b>Message</b>.</dd>
+        <dt>payload.source.id <span class="property-type">string</span></dt>
+        <dd>the <b>Id</b> of the node that threw the log.</dd>
+        <dt>payload.source.type <span class="property-type">string</span></dt>
+        <dd>the <b>Type</b> of the node that threw the log.</dd>
+        <dt>payload.source.name <span class="property-type">string</span></dt>
+        <dd>the <b>Name</b>, if set, of the node that threw the log.</dd>
+    </dl>
+</script>
+
+<script type="text/javascript">
+    let dockerContainersOptions = [
+        { value: 'containers-list', label: 'List Containers', container_id: false },
+        { value: 'constainers-top', label: 'List Container Processes', container_id: 'required' },
+        { value: 'containers-inspect', label: 'Inspect Container', container_id: 'required' },
+        { value: 'containers-stats', label: 'Container Stats', container_id: 'required' },
+        { value: 'containers-start', label: 'Container Start', container_id: 'required' },
+        { value: 'containers-stop', label: 'Container Stop', container_id: 'required' },
+        { value: 'containers-restart', label: 'Container Restart', container_id: 'required' },
+    ];
+    let dockerContainersFields = ['container_id'];
+    RED.nodes.registerType('docker-containers', {
+        category: 'docker',
+        color: '#2496ed',
+        defaults: {
+            name: { value: '' },
+            server: { value: '', type: 'docker-server', required: true },
+            command_name: { value: '', required: true },
+            container_id: {
+                value: '',
+                validate: function (v) {
+                    let selCommand = dockerContainersOptions.find((x) => x.value === $('#node-input-command_name').val());
+                    return !(selCommand && selCommand.container_id && selCommand.container_id === 'required' && !v);
+                },
+            },
+            container_id_type: { value: 'str' },
+        },
+        inputs: 1,
+        outputs: 2,
+        icon: 'docker.png',
+        label: function () {
+            if (this.name) {
+                return this.name;
+            }
+            let selCommand = dockerContainersOptions.find((x) => x.value === this.command_name);
+            if (selCommand) {
+                return selCommand.label.toLowerCase();
+            }
+            return 'containers';
+        },
+        paletteLabel: function () {
+            return 'containers';
+        },
+        outputLabels: ['output', 'log'],
+        oneditprepare: function () {
+            $('#node-input-command_name').on('change', function (element) {
+                let selCommand = dockerContainersOptions.find((x) => x.value === element.currentTarget.value);
+                // Show or Hide fields depending of selected command.
+                dockerContainersFields.forEach(function (field) {
+                    let element = $('#node-input-' + field + '-row');
+                    !selCommand[field] || selCommand[field] === false ? element.hide() : element.show();
+                });
+            });
+            $('#node-input-command_name').typedInput({
+                types: [
+                    {
+                        value: 'command_name',
+                        options: dockerContainersOptions,
+                    },
+                ],
+            });
+            $('#node-input-container_id').typedInput({
+                default: 'str',
+                typeField: $('#node-input-container_id_type'),
+                types: ['str', 'num', 'msg', 'flow', 'global'],
+            });
+        },
+        oneditsave: function () {
+            let selCommand = dockerContainersOptions.find((x) => x.value === $('#node-input-command_name').val());
+            // Clean fields depending of selected command.
+            dockerContainersFields.forEach(function (field) {
+                let element = $('#node-input-' + field);
+                if (!selCommand[field] || selCommand[field] === false) {
+                    element.val('');
+                }
+            });
+        },
+    });
+</script>
