@@ -47,10 +47,10 @@ In addition, all the nodes have a **Log** output that offers information on how 
     "payload": {
         "source": {
             "id": "0f12103e2251c436",
-            "type": "docker-movie-get"
+            "type": "docker-containers-list"
         },
         "level": "Info",
-        "message": "2084 Movie/s returned"
+        "message": "15 Container/s returned"
     },
     "_msgid": "4c1261a1eb9bfb44"
 }
