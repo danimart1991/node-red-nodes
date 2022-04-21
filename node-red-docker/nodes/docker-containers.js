@@ -35,7 +35,7 @@ module.exports = function (RED) {
             {
                 value: 'containers-stats',
                 method: 'GET',
-                uri: (container_id) => `/containers/${container_id}/stats`,
+                uri: (container_id) => `/containers/${container_id}/stats?stream=false`,
                 loadingStepMessage: 'obtaining container stats',
                 successStepMessage: (none) => 'Container Stats returned',
                 container_id: 'required',
