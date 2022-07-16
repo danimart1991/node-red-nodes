@@ -1,6 +1,6 @@
 module.exports = function (RED) {
     'use strict';
-    let http = require('http');
+    const http = require('http');
 
     function DockerServerNode(config) {
         RED.nodes.createNode(this, config);
@@ -28,7 +28,7 @@ module.exports = function (RED) {
             }
         }
         return new Promise(function (resolve, reject) {
-            var request = http.request(options, (response) => {
+            let request = http.request(options, (response) => {
                 let body = '';
                 response.on('data', (data) => (body = JSON.parse(data)));
                 response.on('end', () => resolve({ status: response.statusCode, body: body }));

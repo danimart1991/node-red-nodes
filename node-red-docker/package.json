@@ -1,6 +1,6 @@
 {
     "name": "@danimart1991/node-red-docker",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "description": "A set of Node-RED nodes to use with a Docker server.",
     "license": "Apache-2.0",
     "homepage": "https://github.com/danimart1991/node-red-nodes/node-red-docker",
@@ -15,7 +15,7 @@
         "container"
     ],
     "node-red": {
-        "version": "^2.0.0",
+        "version": ">=2.0.0",
         "nodes": {
             "docker-containers": "nodes/docker-containers.js",
             "docker-server": "nodes/docker-server.js"
