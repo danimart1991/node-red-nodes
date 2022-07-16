@@ -1,6 +1,6 @@
 module.exports = function (RED) {
     'use strict';
-    let request = require('request');
+    const request = require('request');
 
     function RadarrApiServerNode(config) {
         RED.nodes.createNode(this, config);
@@ -38,7 +38,7 @@ module.exports = function (RED) {
     });
 
     RED.httpAdmin.get('/radarr-api/:id/:method', RED.auth.needsPermission('radarr-api.read'), function (req, res, next) {
-        var serverNode = RED.nodes.getNode(req.params.id);
+        let serverNode = RED.nodes.getNode(req.params.id);
         serverNode
             .get(req.params.method)
             .then(function (response) {
@@ -79,7 +79,7 @@ module.exports = function (RED) {
         let node = this;
         opts = opts || {};
         opts.apikey = node.credentials.api_key;
-        var options = {
+        let options = {
             baseUrl: node.credentials.url,
             uri: '/api/v3/' + uri,
             json: true,
@@ -109,7 +109,7 @@ module.exports = function (RED) {
         let node = this;
         opts = opts || {};
         opts.apikey = node.credentials.api_key;
-        var options = {
+        let options = {
             baseUrl: node.credentials.url,
             uri: '/api/v3/' + uri,
             json: true,
