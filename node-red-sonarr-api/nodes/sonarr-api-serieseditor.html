@@ -163,7 +163,7 @@
         },
         outputLabels: ['series', 'log'],
         oneditprepare: function () {
-            var node = this;
+            let node = this;
             $('#node-input-server').on('change', function () {
                 getQualityProfiles(node.quality_profile);
                 getLanguageProfiles(node.language_profile);
