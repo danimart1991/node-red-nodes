@@ -12,6 +12,7 @@ A collection of my personal palette nodes (modules) for [_Node-RED_](http://node
 
 - [**@danimart1991/node-red-radarr-api**](node-red-radarr-api): A set of [_Node-RED_](http://nodered.org/) nodes to use with [_Radarr API_](https://radarr.video/).
 - [**@danimart1991/node-red-sonarr-api**](node-red-sonarr-api): A set of [_Node-RED_](http://nodered.org/) nodes to use with [_Sonarr API_](https://sonarr.tv/).
+- [**@danimart1991/node-red-docker**](node-red-docker): A set of [_Node-RED_](http://nodered.org/) nodes to use with a [_Docker Server_](https://www.docker.com/).
 
 ## Installation
 
