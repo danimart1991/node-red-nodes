@@ -1,0 +1,64 @@
+<script type="text/html" data-template-name="sonarr-api-indexertestall-post">
+    <div class="form-row">
+        <label for="node-input-server"><i class="fa fa-server"></i> Server</label>
+        <input type="text" id="node-input-server" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name" />
+    </div>
+</script>
+
+<script type="text/html" data-help-name="sonarr-api-indexertestall-post">
+    <p>
+        Test and get an <i>Array</i> of all the indexers status stored in the <i>Sonarr</i> database.
+    </p>
+    <p>In addition, the second output provides a <b>Log</b> with information on how the execution has worked.</p>
+
+    <h3>Parameters</h3>
+    <dl class="message-properties">
+        <dt>server <span class="property-type">sonarr-api-server</span></dt>
+        <dd>a <b>Sonarr Server</b> previously configured.</dd>
+    </dl>
+
+    <h3>Output 1 (Result)</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>an <i>Array</i> with one or more indexers status <i>objects</i>.</dd>
+    </dl>
+
+    <h3>Output 2 (Log)</h3>
+    <dl class="message-properties">
+        <dt>payload.level <span class="property-type">string</span></dt>
+        <dd>the log <b>Level</b>: <i>Debug</i>, <i>Info</i>, <i>Warn</i>, <i>Error</i>, <i>Critical</i> or <i>Other</i>.</dd>
+        <dt>payload.message <span class="property-type">string</span></dt>
+        <dd>the log <b>Message</b>.</dd>
+        <dt>payload.source.id <span class="property-type">string</span></dt>
+        <dd>the <b>Id</b> of the node that threw the log.</dd>
+        <dt>payload.source.type <span class="property-type">string</span></dt>
+        <dd>the <b>Type</b> of the node that threw the log.</dd>
+        <dt>payload.source.name <span class="property-type">string</span></dt>
+        <dd>the <b>Name</b>, if set, of the node that threw the log.</dd>
+    </dl>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('sonarr-api-indexertestall-post', {
+        category: 'sonarr',
+        color: '#5d9cec',
+        defaults: {
+            name: { value: '' },
+            server: { value: '', type: 'sonarr-api-server', required: true },
+        },
+        inputs: 1,
+        outputs: 2,
+        icon: 'font-awesome/fa-television',
+        label: function () {
+            return this.name || 'indexers test all';
+        },
+        paletteLabel: function () {
+            return 'indexers test all';
+        },
+        outputLabels: ['indexers status', 'log'],
+    });
+</script>

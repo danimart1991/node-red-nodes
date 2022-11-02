@@ -24,6 +24,7 @@
             "sonarr-api-episode": "nodes/sonarr-api-episode.js",
             "sonarr-api-episodefile": "nodes/sonarr-api-episodefile.js",
             "sonarr-api-history": "nodes/sonarr-api-history.js",
+            "sonarr-api-indexertestall": "nodes/sonarr-api-indexertestall.js",
             "sonarr-api-series": "nodes/sonarr-api-series.js",
             "sonarr-api-serieseditor": "nodes/sonarr-api-serieseditor.js",
             "sonarr-api-server": "nodes/sonarr-api-server.js"
