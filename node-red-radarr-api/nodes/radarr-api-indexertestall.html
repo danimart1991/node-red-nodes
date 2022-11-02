@@ -45,14 +45,14 @@
 <script type="text/javascript">
     RED.nodes.registerType('radarr-api-indexertestall-post', {
         category: 'radarr',
-        color: '#5d9cec',
+        color: '#ffc230',
         defaults: {
             name: { value: '' },
             server: { value: '', type: 'radarr-api-server', required: true },
         },
         inputs: 1,
         outputs: 2,
-        icon: 'font-awesome/fa-television',
+        icon: 'font-awesome/fa-play',
         label: function () {
             return this.name || 'indexers test all';
         },
