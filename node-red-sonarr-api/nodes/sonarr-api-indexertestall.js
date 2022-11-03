@@ -36,8 +36,14 @@ module.exports = function (RED) {
                                 case 200:
                                     msg.payload = response.body;
                                     level = 'Info';
-                                    message = `${Array.isArray(msg.payload) ? msg.payload.length : 1} Indexers Status returned`;
+                                    message = `${Array.isArray(msg.payload) ? msg.payload.length : 1} Valid Indexer/s Status returned`;
                                     statusMessage = message.toLowerCase();
+                                    break;
+                                case 400:
+                                    msg.payload = response.body;
+                                    level = 'Warn';
+                                    message = '400 Bad Request. Some Invalid Indexer/s Status returned';
+                                    statusMessage = '400 bad request';
                                     break;
                                 case 401:
                                     level = 'Error';
