@@ -39,7 +39,8 @@ Two parameters are required to properly configure this node:
 ### Nodes
 
 | Entity           | Get | Post | Put | Delete |
-| ---------------- | :-: | :--: | :-: | :----: |
+|------------------| :-: |:----:|:---:|:------:|
+| Calendar         |  ✔  |  -   |  -  |   -    |
 | Command          |  ✔  |  ✔   |     |        |
 | Episode          |  ✔  |      |     |        |
 | Episode File     |  ✔  |      |     |        |
