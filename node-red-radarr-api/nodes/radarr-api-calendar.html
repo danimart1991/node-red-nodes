@@ -79,31 +79,11 @@
         defaults: {
             name: { value: '' },
             server: { value: '', type: 'radarr-api-server', required: true },
-            start: {
-                value: '',
-                validate: function(v) {
-                    if (!v) {
-                        return true;
-                    }
-                    if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(v)) return false;
-                    const d = new Date(v);
-                    return d instanceof Date && !isNaN(d.getTime()) && d.toISOString() === v;
-                },
-            },
+            start: { value: ''},
             start_type: { value: 'str' },
             unmonitored: { value: 'false' },
             unmonitored_type: { value: 'option' },
-            end: {
-                value: '',
-                validate: function(v) {
-                    if (!v) {
-                        return true;
-                    }
-                    if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(v)) return false;
-                    const d = new Date(v);
-                    return d instanceof Date && !isNaN(d.getTime()) && d.toISOString() === v;
-                },
-            },
+            end: { value: '' },
             end_type: { value: 'str' },
             tags: { value: '' },
             tags_type: { value: 'str' },
