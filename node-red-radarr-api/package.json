@@ -20,6 +20,7 @@
     "node-red": {
         "version": ">=2.0.0",
         "nodes": {
+            "radarr-api-calendar": "nodes/radarr-api-calendar.js",
             "radarr-api-command": "nodes/radarr-api-command.js",
             "radarr-api-history": "nodes/radarr-api-history.js",
             "radarr-api-indexertestall": "nodes/radarr-api-indexertestall.js",

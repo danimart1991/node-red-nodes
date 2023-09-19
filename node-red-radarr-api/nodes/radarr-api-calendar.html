@@ -1,0 +1,151 @@
+<script type='text/html' data-template-name='radarr-api-calendar'>
+    <div class='form-row'>
+        <label for='node-input-server'><i class='fa fa-server'></i> Server</label>
+        <input type='text' id='node-input-server' />
+    </div>
+    <div class='form-row'>
+        <label for='node-input-name'><i class='fa fa-tag'></i> Name</label>
+        <input type='text' id='node-input-name' placeholder='Name' />
+    </div>
+    <hr align='middle' />
+    <div class='form-row'>
+        <label for='node-input-start'><i class='fa fa-clock-o'></i> Start</label>
+        <input type='text' id='node-input-start' placeholder='2023-09-30T22:59:59.999Z' />
+        <input type='hidden' id='node-input-start_type' />
+    </div>
+    <div class='form-row'>
+        <label for='node-input-end'><i class='fa fa-clock-o'></i> End</label>
+        <input type='text' id='node-input-end' placeholder='2023-09-30T22:59:59.999Z' />
+        <input type='hidden' id='node-input-end_type' />
+    </div>
+    <div class='form-row'>
+        <label for='node-input-unmonitored'><i class='fa fa-bookmark'></i> Unmonitored</label>
+        <input type='text' id='node-input-unmonitored' placeholder='Optional' />
+        <input type='hidden' id='node-input-unmonitored_type' />
+    </div>
+    <div class='form-row'>
+        <label for='node-input-tags'><i class='fa fa-tags'></i> Tags</label>
+        <input type='text' id='node-input-tags' placeholder='tag1,tag2' />
+        <input type='hidden' id='node-input-tags_type' />
+    </div>
+</script>
+
+<script type='text/html' data-help-name='radarr-api-calendar'>
+    <p>
+        Get an <i>Array</i> of all <i>events</i> in your radarr calendar. The <i>Start</i> and <i>End</i> dates can be
+        specified as an <i>ISO String</i> to narrow down your request.
+    </p>
+    <p>In addition, the second output provides a <b>Log</b> with information on how the execution has worked.</p>
+
+    <h3>Parameters</h3>
+    <dl class='message-properties'>
+        <dt>server <span class='property-type'>radarr-api-server</span></dt>
+        <dd>a <b>Radarr Server</b> previously configured.</dd>
+        <dt class='optional'>start <span class='property-type'>ISO datetime string</span></dt>
+        <dd>a <b>DateTime</b> from which the event list should start from.</dd>
+        <dt class='optional'>end <span class='property-type'>ISO datetime string</span></dt>
+        <dd>a <b>DateTime</b> from which the event list should end.</dd>
+        <dt class='optional'>tag <span class='property-type'>string</span></dt>
+        <dd>a list of tags.</dd>
+        <dt class='optional'>unmonitored <span class='property-type'>bool</span></dt>
+    </dl>
+
+    <h3>Output 1 (Result)</h3>
+    <dl class='message-properties'>
+        <dt>payload <span class='property-type'>object</span></dt>
+        <dd>an <i>Array</i> with one or more <i>events</i>.</dd>
+    </dl>
+
+    <h3>Output 2 (Log)</h3>
+    <dl class='message-properties'>
+        <dt>payload.level <span class='property-type'>string</span></dt>
+        <dd>the log <b>Level</b>: <i>Debug</i>, <i>Info</i>, <i>Warn</i>, <i>Error</i>, <i>Critical</i> or <i>Other</i>.
+        </dd>
+        <dt>payload.message <span class='property-type'>string</span></dt>
+        <dd>the log <b>Message</b>.</dd>
+        <dt>payload.source.id <span class='property-type'>string</span></dt>
+        <dd>the <b>Id</b> of the node that threw the log.</dd>
+        <dt>payload.source.type <span class='property-type'>string</span></dt>
+        <dd>the <b>Type</b> of the node that threw the log.</dd>
+        <dt>payload.source.name <span class='property-type'>string</span></dt>
+        <dd>the <b>Name</b>, if set, of the node that threw the log.</dd>
+    </dl>
+</script>
+
+<script type='text/javascript'>
+    RED.nodes.registerType('radarr-api-calendar', {
+        category: 'radarr',
+        color: '#ffc230',
+        defaults: {
+            name: { value: '' },
+            server: { value: '', type: 'radarr-api-server', required: true },
+            start: {
+                value: '',
+                validate: function(v) {
+                    if (!v) {
+                        return true;
+                    }
+                    if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(v)) return false;
+                    const d = new Date(v);
+                    return d instanceof Date && !isNaN(d.getTime()) && d.toISOString() === v;
+                },
+            },
+            start_type: { value: 'str' },
+            unmonitored: { value: 'false' },
+            unmonitored_type: { value: 'option' },
+            end: {
+                value: '',
+                validate: function(v) {
+                    if (!v) {
+                        return true;
+                    }
+                    if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(v)) return false;
+                    const d = new Date(v);
+                    return d instanceof Date && !isNaN(d.getTime()) && d.toISOString() === v;
+                },
+            },
+            end_type: { value: 'str' },
+            tags: { value: '' },
+            tags_type: { value: 'str' },
+        },
+        inputs: 1,
+        outputs: 2,
+        icon: 'font-awesome/fa-calendar',
+        label: function() {
+            return this.name || 'calendar';
+        },
+        paletteLabel: function() {
+            return 'calendar';
+        },
+        outputLabels: ['events', 'log'],
+        oneditprepare: function() {
+            $('#node-input-start').typedInput({
+                default: 'str',
+                typeField: $('#node-input-start_type'),
+                types: ['str', 'msg', 'flow', 'global'],
+            });
+            $('#node-input-end').typedInput({
+                default: 'str',
+                typeField: $('#node-input-end_type'),
+                types: ['str', 'msg', 'flow', 'global'],
+            });
+            $('#node-input-tags').typedInput({
+                default: 'str',
+                typeField: $('#node-input-tags_type'),
+                types: ['str', 'msg', 'flow', 'global'],
+            });
+            $('#node-input-unmonitored').typedInput({
+                default: 'option',
+                typeField: $('#node-input-unmonitored_type'),
+                types: [{
+                    value: 'option',
+                    options: [
+                        { value: '', label: 'All' },
+                        { value: 'true', label: 'True' },
+                        { value: 'false', label: 'False' },
+                    ],
+                }, 'msg', 'flow', 'global'],
+            });
+        },
+    });
+</script>
