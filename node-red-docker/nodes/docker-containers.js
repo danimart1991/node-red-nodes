@@ -1,5 +1,6 @@
 module.exports = function (RED) {
     'use strict';
+    const { promisify } = require('util');
 
     function DockerContainersNode(config) {
         RED.nodes.createNode(this, config);
@@ -17,7 +18,7 @@ module.exports = function (RED) {
                 container_id: false,
             },
             {
-                value: 'constainers-top',
+                value: 'containers-top',
                 method: 'GET',
                 uri: (container_id) => `/containers/${container_id}/top`,
                 loadingStepMessage: 'obtaining container processes',
@@ -52,8 +53,8 @@ module.exports = function (RED) {
                 value: 'containers-stop',
                 method: 'POST',
                 uri: (container_id) => `/containers/${container_id}/stop`,
-                loadingStepMessage: 'stoping container',
-                successStepMessage: (none) => 'Container Stoped',
+                loadingStepMessage: 'stopping container',
+                successStepMessage: (none) => 'Container Stopped',
                 container_id: 'required',
             },
             {
@@ -77,7 +78,9 @@ module.exports = function (RED) {
         } else {
             this.server = RED.nodes.getNode(config.server);
 
-            node.on('input', function (msg) {
+            node.on('input', async function (msg) {
+                const evaluateNodeProperty = promisify(RED.util.evaluateNodeProperty);
+
                 let server = this.server;
                 let nodeType = `docker-containers`;
 
@@ -88,7 +91,7 @@ module.exports = function (RED) {
                 let selCommand = dockerContainersOptions.find((x) => x.value === config.command_name);
                 if (!selCommand) {
                     level = 'Critical';
-                    message = 'Command Name not found or incorretly configured.';
+                    message = 'Command Name not found or incorrectly configured.';
                     statusMessage = 'command_name error';
 
                     server.sendOutput(node, msg, nodeType, level, message, statusMessage);
@@ -99,11 +102,11 @@ module.exports = function (RED) {
                 }
 
                 let anyRequiredVarWrongConfigured = false;
-                dockerContainersFields.forEach(function (field) {
-                    let container_id = RED.util.evaluateNodeProperty(config.container_id, config.container_id_type || 'str', node, msg);
+                dockerContainersFields.forEach(async function (field) {
+                    let container_id = await evaluateNodeProperty(config.container_id, config.container_id_type || 'str', node, msg);
                     if (selCommand[field] === 'required' && !container_id) {
                         level = 'Critical';
-                        message = `${field} not found or incorretly configured.`;
+                        message = `${field} not found or incorrectly configured.`;
                         statusMessage = `${field} error`;
 
                         server.sendOutput(node, msg, nodeType, level, message, statusMessage);
@@ -116,7 +119,7 @@ module.exports = function (RED) {
                 }
 
                 try {
-                    let container_id = RED.util.evaluateNodeProperty(config.container_id, config.container_id_type || 'str', node, msg);
+                    let container_id = await evaluateNodeProperty(config.container_id, config.container_id_type || 'str', node, msg);
                     server
                         .request(selCommand.uri(container_id), selCommand.method)
                         .then(function (response) {
