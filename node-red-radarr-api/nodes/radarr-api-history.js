@@ -1,5 +1,6 @@
 module.exports = function (RED) {
     'use strict';
+    const { promisify } = require('util');
 
     function RadarrApiHistoryGetNode(config) {
         RED.nodes.createNode(this, config);
@@ -17,7 +18,7 @@ module.exports = function (RED) {
         } else {
             this.server = RED.nodes.getNode(config.server);
 
-            node.on('input', function (msg) {
+            node.on('input', async function (msg) {
                 node.status({ fill: 'blue', shape: 'dot', text: 'obtaining histories' });
                 let server = this.server;
                 let nodeType = 'radarr-api-history-get';
@@ -27,10 +28,11 @@ module.exports = function (RED) {
                 let message = 'Unknown Status.';
 
                 try {
-                    let include_movie = RED.util.evaluateNodeProperty(config.include_movie, 'bool', node, msg);
-                    let movie_id = RED.util.evaluateNodeProperty(config.movie_id, config.movie_id_type || 'num', node, msg);
-                    let page = RED.util.evaluateNodeProperty(config.page, config.page_type || 'num', node, msg);
-                    let page_size = RED.util.evaluateNodeProperty(config.page_size, config.page_size_type || 'num', node, msg);
+                    const evaluateNodeProperty = promisify(RED.util.evaluateNodeProperty);
+                    let include_movie = await evaluateNodeProperty(config.include_movie, 'bool', node, msg);
+                    let movie_id = await evaluateNodeProperty(config.movie_id, config.movie_id_type || 'num', node, msg);
+                    let page = await evaluateNodeProperty(config.page, config.page_type || 'num', node, msg);
+                    let page_size = await evaluateNodeProperty(config.page_size, config.page_size_type || 'num', node, msg);
                     let uri = `history/${movie_id ? 'movie' : ''}`;
                     let opts = {
                         includeMovie: include_movie,

@@ -1,5 +1,6 @@
 module.exports = function (RED) {
     'use strict';
+    const { promisify } = require('util');
 
     function RadarrApiMovieEditorPutNode(config) {
         RED.nodes.createNode(this, config);
@@ -17,7 +18,7 @@ module.exports = function (RED) {
         } else {
             this.server = RED.nodes.getNode(config.server);
 
-            node.on('input', function (msg) {
+            node.on('input', async function (msg) {
                 node.status({ fill: 'blue', shape: 'dot', text: 'editing movie/s' });
                 let server = this.server;
                 let nodeType = 'radarr-api-movieeditor-put';
@@ -27,7 +28,8 @@ module.exports = function (RED) {
                 let message = 'Unknown Status.';
 
                 try {
-                    let movie_ids = RED.util.evaluateNodeProperty(config.movie_ids, config.movie_ids_type || 'num', node, msg);
+                    const evaluateNodeProperty = promisify(RED.util.evaluateNodeProperty);
+                    let movie_ids = await evaluateNodeProperty(config.movie_ids, config.movie_ids_type || 'num', node, msg);
                     if (!movie_ids) {
                         level = 'Error';
                         message = 'Movie Id/s parameter is required';
@@ -56,7 +58,7 @@ module.exports = function (RED) {
                             }
                             if (config.root_folder) {
                                 data.rootFolderPath = config.root_folder;
-                                let move_files = RED.util.evaluateNodeProperty(config.move_files, 'bool', node, msg);
+                                let move_files = await evaluateNodeProperty(config.move_files, 'bool', node, msg);
                                 data.moveFiles = move_files;
                             }
                             if (config.minimum_availability) {

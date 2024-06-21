@@ -1,5 +1,6 @@
 module.exports = function (RED) {
     'use strict';
+    const { promisify } = require('util');
 
     function RadarrApiMovieFileGetNode(config) {
         RED.nodes.createNode(this, config);
@@ -20,7 +21,7 @@ module.exports = function (RED) {
         } else {
             this.server = RED.nodes.getNode(config.server);
 
-            node.on('input', function (msg) {
+            node.on('input', async function (msg) {
                 node.status({ fill: 'blue', shape: 'dot', text: 'obtaining movie file/s' });
                 let server = this.server;
                 let nodeType = 'radarr-api-moviefile-get';
@@ -30,7 +31,8 @@ module.exports = function (RED) {
                 let message = 'Unknown Status.';
 
                 try {
-                    let movie_id = RED.util.evaluateNodeProperty(config.movie_id, config.movie_id_type || 'num', node, msg);
+                    const evaluateNodeProperty = promisify(RED.util.evaluateNodeProperty);
+                    let movie_id = await evaluateNodeProperty(config.movie_id, config.movie_id_type || 'num', node, msg);
                     let uri = `moviefile`;
                     let opts = { movieId: movie_id };
 

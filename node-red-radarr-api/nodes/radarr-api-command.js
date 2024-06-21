@@ -1,5 +1,6 @@
 module.exports = function (RED) {
     'use strict';
+    const { promisify } = require('util');
 
     function RadarrApiCommandGetNode(config) {
         RED.nodes.createNode(this, config);
@@ -17,7 +18,7 @@ module.exports = function (RED) {
         } else {
             this.server = RED.nodes.getNode(config.server);
 
-            node.on('input', function (msg) {
+            node.on('input', async function (msg) {
                 node.status({ fill: 'blue', shape: 'dot', text: 'obtaining command/s' });
                 let server = this.server;
                 let nodeType = 'radarr-api-command-get';
@@ -27,7 +28,8 @@ module.exports = function (RED) {
                 let message = 'Unknown Status.';
 
                 try {
-                    let command_id = RED.util.evaluateNodeProperty(config.command_id, config.command_id_type || 'num', node, msg);
+                    const evaluateNodeProperty = promisify(RED.util.evaluateNodeProperty);
+                    let command_id = await evaluateNodeProperty(config.command_id, config.command_id_type || 'num', node, msg);
                     let uri = `command/${command_id ? command_id : ''}`;
 
                     this.server
@@ -100,7 +102,7 @@ module.exports = function (RED) {
         } else {
             this.server = RED.nodes.getNode(config.server);
 
-            node.on('input', function (msg) {
+            node.on('input', async function (msg) {
                 node.status({ fill: 'blue', shape: 'dot', text: 'sending command' });
                 let server = this.server;
                 let nodeType = 'radarr-api-command-post';
@@ -110,8 +112,9 @@ module.exports = function (RED) {
                 let message = 'Unknown Status.';
 
                 try {
-                    let movie_ids_optional = RED.util.evaluateNodeProperty(config.movie_ids_optional, config.movie_ids_optional_type || 'num', node, msg);
-                    let movie_ids = RED.util.evaluateNodeProperty(config.movie_ids, config.movie_ids_type || 'num', node, msg);
+                    const evaluateNodeProperty = promisify(RED.util.evaluateNodeProperty);
+                    let movie_ids_optional = await evaluateNodeProperty(config.movie_ids_optional, config.movie_ids_optional_type || 'num', node, msg);
+                    let movie_ids = await evaluateNodeProperty(config.movie_ids, config.movie_ids_type || 'num', node, msg);
                     let uri = 'command';
                     let data = { name: config.command_name };
                     if (movie_ids_optional) {
