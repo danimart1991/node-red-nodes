@@ -1,5 +1,6 @@
 module.exports = function (RED) {
     'use strict';
+    const { promisify } = require('util');
 
     function SonarrApiSeriesEditorPutNode(config) {
         RED.nodes.createNode(this, config);
@@ -17,7 +18,7 @@ module.exports = function (RED) {
         } else {
             this.server = RED.nodes.getNode(config.server);
 
-            node.on('input', function (msg) {
+            node.on('input', async function (msg) {
                 node.status({ fill: 'blue', shape: 'dot', text: 'editing series' });
                 let server = this.server;
                 let nodeType = 'sonarr-api-serieseditor-put';
@@ -27,7 +28,8 @@ module.exports = function (RED) {
                 let message = 'Unknown Status.';
 
                 try {
-                    let series_ids = RED.util.evaluateNodeProperty(config.series_ids, config.series_ids_type || 'num', node, msg);
+                    const evaluateNodeProperty = promisify(RED.util.evaluateNodeProperty);
+                    let series_ids = await evaluateNodeProperty(config.series_ids, config.series_ids_type || 'num', node, msg);
                     if (!series_ids) {
                         level = 'Error';
                         message = 'Series Id/s parameter is required';
@@ -59,7 +61,7 @@ module.exports = function (RED) {
                             }
                             if (config.root_folder) {
                                 data.rootFolderPath = config.root_folder;
-                                let move_files = RED.util.evaluateNodeProperty(config.move_files, 'bool', node, msg);
+                                let move_files = await evaluateNodeProperty(config.move_files, 'bool', node, msg);
                                 data.moveFiles = move_files;
                             }
                             if (config.series_type) {

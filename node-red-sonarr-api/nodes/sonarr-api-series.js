@@ -1,5 +1,6 @@
 module.exports = function (RED) {
     'use strict';
+    const { promisify } = require('util');
 
     function SonarrApiSeriesGetNode(config) {
         RED.nodes.createNode(this, config);
@@ -17,7 +18,7 @@ module.exports = function (RED) {
         } else {
             this.server = RED.nodes.getNode(config.server);
 
-            node.on('input', function (msg) {
+            node.on('input', async function (msg) {
                 node.status({ fill: 'blue', shape: 'dot', text: 'obtaining series' });
                 let server = this.server;
                 let nodeType = 'sonarr-api-series-get';
@@ -27,7 +28,8 @@ module.exports = function (RED) {
                 let message = 'Unknown Status.';
 
                 try {
-                    let series_id = RED.util.evaluateNodeProperty(config.series_id, config.series_id_type || 'num', node, msg);
+                    const evaluateNodeProperty = promisify(RED.util.evaluateNodeProperty);
+                    let series_id = await evaluateNodeProperty(config.series_id, config.series_id_type || 'num', node, msg);
                     let uri = `series/${series_id ? series_id : ''}`;
 
                     server
