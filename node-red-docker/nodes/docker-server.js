@@ -30,14 +30,33 @@ module.exports = function (RED) {
         return new Promise(function (resolve, reject) {
             let request = http.request(options, (response) => {
                 let body = '';
-                response.on('data', (data) => (body = JSON.parse(data)));
-                response.on('end', () => resolve({ status: response.statusCode, body: body }));
+                response.on('data', (chunk) => (body += chunk.toString()));
+                response.on('end', () => {
+                    try {
+                        if (!body.length) {
+                            resolve({ status: response.statusCode, body: {} });
+                            return;
+                        }
+                        const parsedBody = JSON.parse(body);
+                        resolve({ status: response.statusCode, body: parsedBody });
+                    } catch (err) {
+                        reject(new Error(`Failed to parse response: ${err.message}\nResponse body: ${body}`));
+                    }
+                });
+                response.on('error', (err) => {
+                    reject(new Error(`Error receiving response: ${err.message}`));
+                });
             });
-            if (data) {
-                request.write(data);
-            }
             request.on('error', (err) => reject(err));
-            request.end();
+
+            try {
+                if (data) {
+                    request.write(data);
+                }
+                request.end();
+            } catch (err) {
+                reject(new Error(`Failed to write request data: ${err.message}`));
+            }
         });
     };
 
