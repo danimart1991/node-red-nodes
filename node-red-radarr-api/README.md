@@ -40,6 +40,7 @@ Two parameters are required to properly configure this node:
 
 | Entity           | Get | Post | Put | Delete |
 | ---------------- | :-: | :--: | :-: | :----: |
+| Calendar         |  ✔  |  -   |  -  |   -    |
 | Command          |  ✔  |  ✔   |     |        |
 | History          |  ✔  |      |     |        |
 | Indexer Test All |  -  |  ✔   |  -  |   -    |
